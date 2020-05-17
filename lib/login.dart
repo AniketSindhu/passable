@@ -8,13 +8,15 @@ import 'package:flutter_svg/svg.dart';
 class AskLogin extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   login(){
-    _scaffoldKey.currentState.showBottomSheet((context) {
+    _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
       return DecoratedBox(
-        decoration: BoxDecoration(color: Theme.of(context).canvasColor),   
+        decoration: BoxDecoration(color: AppColors.tertiary),   
         child: ClipRRect(borderRadius: BorderRadius.only( 
-          topLeft: Radius.circular(40.0), 
-          topRight: Radius.circular(40.0)), 
-          child: Container( child: ListView())
+          topLeft: Radius.circular(100.0), 
+          topRight: Radius.circular(100.0)), 
+          child: Container( child: ListView(
+           children:<Widget>[ListTile(title:Text("hey"),)]
+          ))
         )
       );
     });

@@ -9,15 +9,19 @@ class AskLogin extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   login(){
     _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
-      return DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.tertiary),   
-        child: ClipRRect(borderRadius: BorderRadius.only( 
-          topLeft: Radius.circular(100.0), 
-          topRight: Radius.circular(100.0)), 
-          child: Container( child: ListView(
-           children:<Widget>[ListTile(title:Text("hey"),)]
-          ))
-        )
+      return Container(
+        color:Color(0xFF737373),
+        height: MediaQuery.of(context).size.height*0.9,
+        child: DecoratedBox(
+          decoration: BoxDecoration(color:AppColors.tertiary),   
+          child: ClipRRect(
+            borderRadius: BorderRadius.only( 
+            topLeft: Radius.circular(100.0), 
+            topRight: Radius.circular(100.0)), 
+            child: Container( child: ListView(
+            ))
+          )
+        ),
       );
     });
   }

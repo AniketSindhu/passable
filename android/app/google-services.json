@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "613822914402",
+    "firebase_url": "https://pass-it-on-811e6.firebaseio.com",
+    "project_id": "pass-it-on-811e6",
+    "storage_bucket": "pass-it-on-811e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613822914402:android:cac0a5721f546c2c64563b",
+        "android_client_info": {
+          "package_name": "com.aniket.passiton"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613822914402-o8p2rr3k68n429r0enerfgje68u4qul2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aniket.passiton",
+            "certificate_hash": "3e757356bc630beb82922b8f55eca683efbdc53c"
+          }
+        },
+        {
+          "client_id": "613822914402-vvjs8cefr4935akqn6r1go2lvc5h5rbs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwn1c31keA8WCwACjbWRfdx-lxHc-kFHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613822914402-vvjs8cefr4935akqn6r1go2lvc5h5rbs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

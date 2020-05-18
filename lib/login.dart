@@ -5,23 +5,108 @@ import 'clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 
-class AskLogin extends StatelessWidget {
+class AskLogin extends StatefulWidget {
+  @override
+  _AskLoginState createState() => _AskLoginState();
+}
+
+class _AskLoginState extends State<AskLogin> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final controllEmail = TextEditingController();
+  final controllPass=TextEditingController();
+  bool _autoValidate = false;
+  String _email,_pass;
+  
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return "Enter valid email";
+    else
+      return null;
+  }
+  void _validateInputs() {
+    if (_formKey.currentState.validate()) {
+//    If all data are correct then save data to out variables
+      _formKey.currentState.save();
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+     } else {
+//    If all data are not valid then start auto validation.
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+  
   login(){
     _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
       return Container(
-        color:Color(0xFF737373),
-        height: MediaQuery.of(context).size.height*0.9,
-        child: DecoratedBox(
-          decoration: BoxDecoration(color:AppColors.tertiary),   
-          child: ClipRRect(
-            borderRadius: BorderRadius.only( 
-            topLeft: Radius.circular(100.0), 
-            topRight: Radius.circular(100.0)), 
-            child: Container( child: ListView(
-            ))
-          )
-        ),
+        height: MediaQuery.of(context).size.height*0.6,
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(50),
+            topRight: Radius.circular(50)),
+            child: Container(
+              color: AppColors.tertiary,
+              child: ListView(
+                children:<Widget>[
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("Login",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 40,fontWeight: FontWeight.w700))),
+                    )
+                  ),
+                  SizedBox(height:MediaQuery.of(context).size.height/20),
+                  Form(
+                    key: _formKey,
+                    autovalidate: _autoValidate,
+                    child: Column(
+                      children: <Widget>[
+                        CustomTextField(
+                        onSaved: (input) {
+                          _email = input;
+                        },
+                        icon: Icon(Icons.email),
+                        hint: "Email",
+                        validator:(input)=>validateEmail(input),
+                        controller: controllEmail,
+                        ),
+                        SizedBox(height:20),
+                        CustomTextField(
+                        onSaved: (input) {
+                          _pass = input;
+                        },
+                        icon: Icon(Icons.perm_identity),
+                        hint: "Password",
+                        validator:(input)=>input.isEmpty ? "*Required" : null,
+                        obsecure: true,
+                        maxLines: 1,
+                        controller: controllPass,
+                          ),
+                        SizedBox(height:20),
+                        ],
+                      ),
+                    ),
+                  Center(
+                    child: RaisedButton(
+                      child: Text("Login",
+                        style:TextStyle(fontSize:25,color:Colors.white,fontWeight: FontWeight.w500)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(20.0)),
+                      onPressed: ()=>_validateInputs(),
+                      color: AppColors.secondary,
+                      splashColor: AppColors.primary,
+                      highlightColor: AppColors.primary,
+                    ),
+                  )
+                ]
+              ),
+        )),
       );
     });
   }
@@ -31,7 +116,7 @@ class AskLogin extends StatelessWidget {
     double width=SizeConfig.getWidth(context);
     return Scaffold(
       key:_scaffoldKey,
-      backgroundColor: AppColors.secondary,
+      backgroundColor: Colors.white,
       body: Column(
         children:<Widget>[
           SizedBox(height:height/20,),
@@ -41,7 +126,7 @@ class AskLogin extends StatelessWidget {
                 text: TextSpan(
                   children:<TextSpan>[
                     TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold))),
-                    TextSpan(text:"it",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.tertiary,fontSize:45,fontWeight: FontWeight.bold))),
+                    TextSpan(text:"it",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:45,fontWeight: FontWeight.bold))),
                     TextSpan(text:"'on",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold)))
                   ] 
                 )
@@ -96,7 +181,7 @@ class AskLogin extends StatelessWidget {
             child: Align(
               child: ClipPath(
                 child: Container(
-                  color: Colors.white,
+                  color: AppColors.secondary,
                   height: 300,
                 ),
                 clipper: BottomWaveClipper(),
@@ -110,3 +195,66 @@ class AskLogin extends StatelessWidget {
   }
 }
 
+class CustomTextField extends StatelessWidget {
+
+  CustomTextField(
+      {this.icon,
+      this.hint,
+      this.obsecure = false,
+      this.validator,
+      this.controller,
+      this.maxLines,
+      this.minLines,
+      this.onSaved});
+  final TextEditingController controller;
+  final FormFieldSetter<String> onSaved;
+  final int maxLines;
+  final int minLines;
+  final Icon icon;
+  final String hint;
+  final bool obsecure;
+  final FormFieldValidator<String> validator;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 35, right: 35),
+      child: TextFormField(
+        onSaved: onSaved,
+        validator: validator,
+        maxLines: maxLines,
+        minLines: minLines,
+        obscureText: obsecure,
+        textCapitalization: TextCapitalization.sentences,
+        controller: controller,
+        style: TextStyle(
+          fontSize: 20,
+          color: AppColors.primary
+        ),
+        decoration: InputDecoration(
+            hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: AppColors.primary),
+            hintText: hint,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(40),
+              borderSide: BorderSide(
+                color: AppColors.primary,
+                width: 3,
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(40),
+              borderSide: BorderSide(
+                color: AppColors.primary,
+                width: 3,
+              ),
+            ),
+            prefixIcon: Padding(
+              child: IconTheme(
+                data: IconThemeData(color: AppColors.primary),
+                child: icon,
+              ),
+              padding: EdgeInsets.only(left: 25, right: 10),
+            )),
+      ),
+    );
+  }
+}

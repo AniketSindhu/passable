@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'HomePage.dart';
-import 'login.dart';
+import 'loginui.dart';
 void main() {
   runApp(MyApp());
 }

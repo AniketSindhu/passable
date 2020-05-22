@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:plan_it_on/signIn.dart';
 import 'clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +17,7 @@ class _AskLoginState extends State<AskLogin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final controllEmail = TextEditingController();
   final controllPass=TextEditingController();
+  final controllName=TextEditingController();
   bool _autoValidate = false;
   String _email,_pass;
   
@@ -42,7 +45,83 @@ class _AskLoginState extends State<AskLogin> {
       });
     }
   }
-  
+    register(){
+    _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
+      return Container(
+        height: MediaQuery.of(context).size.height*0.6,
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(50),
+            topRight: Radius.circular(50)),
+            child: Container(
+              color: AppColors.tertiary,
+              child: ListView(
+                children:<Widget>[
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("Register",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 40,fontWeight: FontWeight.w700))),
+                    )
+                  ),
+                  SizedBox(height:MediaQuery.of(context).size.height/20),
+                  Form(
+                    key: _formKey,
+                    autovalidate: _autoValidate,
+                    child: Column(
+                      children: <Widget>[
+                        CustomTextField(
+                        onSaved: (input) {
+                          _email = input;
+                        },
+                        icon: Icon(Icons.assignment_ind),
+                        hint: "Name",
+                        validator:(input)=>validateEmail(input),
+                        controller: controllName,
+                        ),
+                        SizedBox(height:20),
+                        CustomTextField(
+                        onSaved: (input) {
+                          _email = input;
+                        },
+                        icon: Icon(Icons.email),
+                        hint: "Email",
+                        validator:(input)=>validateEmail(input),
+                        controller: controllEmail,
+                        ),
+                        SizedBox(height:20),
+                        CustomTextField(
+                        onSaved: (input) {
+                          _pass = input;
+                        },
+                        icon: Icon(Icons.perm_identity),
+                        hint: "Password",
+                        validator:(input)=>input.isEmpty ? "*Required" : null,
+                        obsecure: true,
+                        maxLines: 1,
+                        controller: controllPass,
+                          ),
+                        SizedBox(height:20),
+                        ],
+                      ),
+                    ),
+                  Center(
+                    child: RaisedButton(
+                      child: Text("Login",
+                        style:TextStyle(fontSize:25,color:Colors.white,fontWeight: FontWeight.w500)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(20.0)),
+                      onPressed: ()=>_validateInputs(),
+                      color: AppColors.secondary,
+                      splashColor: AppColors.primary,
+                      highlightColor: AppColors.primary,
+                    ),
+                  )
+                ]
+              ),
+        )),
+      );
+    });
+  }  
   login(){
     _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
       return Container(
@@ -173,6 +252,7 @@ class _AskLoginState extends State<AskLogin> {
                     color: AppColors.primary,
                     fontSize: 28),),
                   onPressed: () { 
+                    register();
                   },
               ),
             ],

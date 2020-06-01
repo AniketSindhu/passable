@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'package:plan_it_on/signIn.dart';
+import 'package:plan_it_on/googleSignIn.dart';
+import 'package:plan_it_on/googleSignIn.dart';
 import 'clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class AskLogin extends StatefulWidget {
   @override
@@ -15,21 +17,10 @@ class AskLogin extends StatefulWidget {
 class _AskLoginState extends State<AskLogin> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final controllEmail = TextEditingController();
-  final controllPass=TextEditingController();
+  final controllPhone=TextEditingController(text:'+91');
   final controllName=TextEditingController();
   bool _autoValidate = false;
-  String _email,_pass;
-  
-  String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return "Enter valid email";
-    else
-      return null;
-  }
+  String _phone,_name;
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
@@ -44,88 +35,11 @@ class _AskLoginState extends State<AskLogin> {
         _autoValidate = true;
       });
     }
-  }
-    register(){
-    _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
-      return Container(
-        height: MediaQuery.of(context).size.height*0.6,
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(50),
-            topRight: Radius.circular(50)),
-            child: Container(
-              color: AppColors.tertiary,
-              child: ListView(
-                children:<Widget>[
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("Register",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 40,fontWeight: FontWeight.w700))),
-                    )
-                  ),
-                  SizedBox(height:MediaQuery.of(context).size.height/20),
-                  Form(
-                    key: _formKey,
-                    autovalidate: _autoValidate,
-                    child: Column(
-                      children: <Widget>[
-                        CustomTextField(
-                        onSaved: (input) {
-                          _email = input;
-                        },
-                        icon: Icon(Icons.assignment_ind),
-                        hint: "Name",
-                        validator:(input)=>validateEmail(input),
-                        controller: controllName,
-                        ),
-                        SizedBox(height:20),
-                        CustomTextField(
-                        onSaved: (input) {
-                          _email = input;
-                        },
-                        icon: Icon(Icons.email),
-                        hint: "Email",
-                        validator:(input)=>validateEmail(input),
-                        controller: controllEmail,
-                        ),
-                        SizedBox(height:20),
-                        CustomTextField(
-                        onSaved: (input) {
-                          _pass = input;
-                        },
-                        icon: Icon(Icons.perm_identity),
-                        hint: "Password",
-                        validator:(input)=>input.isEmpty ? "*Required" : null,
-                        obsecure: true,
-                        maxLines: 1,
-                        controller: controllPass,
-                          ),
-                        SizedBox(height:20),
-                        ],
-                      ),
-                    ),
-                  Center(
-                    child: RaisedButton(
-                      child: Text("Login",
-                        style:TextStyle(fontSize:25,color:Colors.white,fontWeight: FontWeight.w500)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
-                      onPressed: ()=>_validateInputs(),
-                      color: AppColors.secondary,
-                      splashColor: AppColors.primary,
-                      highlightColor: AppColors.primary,
-                    ),
-                  )
-                ]
-              ),
-        )),
-      );
-    });
   }  
-  login(){
+  MobileLogin(){
     _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
       return Container(
-        height: MediaQuery.of(context).size.height*0.6,
+        height: MediaQuery.of(context).size.height*0.45,
         child: ClipRRect(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(50),
@@ -137,10 +51,10 @@ class _AskLoginState extends State<AskLogin> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text("Login",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 40,fontWeight: FontWeight.w700))),
+                      child: Text("Login",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 30,fontWeight: FontWeight.w700))),
                     )
                   ),
-                  SizedBox(height:MediaQuery.of(context).size.height/20),
+                  SizedBox(height:MediaQuery.of(context).size.height/35),
                   Form(
                     key: _formKey,
                     autovalidate: _autoValidate,
@@ -148,33 +62,32 @@ class _AskLoginState extends State<AskLogin> {
                       children: <Widget>[
                         CustomTextField(
                         onSaved: (input) {
-                          _email = input;
+                          _phone = input;
                         },
-                        icon: Icon(Icons.email),
-                        hint: "Email",
-                        validator:(input)=>validateEmail(input),
-                        controller: controllEmail,
+                        icon: Icon(Icons.phone),
+                        hint: "Phone",
+                        validator:(input)=>input.length<13?"*enter valid phone number":null,
+                        controller: controllPhone,
                         ),
-                        SizedBox(height:20),
+                        SizedBox(height:10),
                         CustomTextField(
                         onSaved: (input) {
-                          _pass = input;
+                          _name= input;
                         },
                         icon: Icon(Icons.perm_identity),
-                        hint: "Password",
+                        hint: "Name",
                         validator:(input)=>input.isEmpty ? "*Required" : null,
-                        obsecure: true,
                         maxLines: 1,
-                        controller: controllPass,
+                        controller: controllName,
                           ),
-                        SizedBox(height:20),
                         ],
                       ),
                     ),
+                    SizedBox(height:10),
                   Center(
                     child: RaisedButton(
-                      child: Text("Login",
-                        style:TextStyle(fontSize:25,color:Colors.white,fontWeight: FontWeight.w500)),
+                      child: Text("Get OTP",
+                        style:TextStyle(fontSize:22,color:Colors.white,fontWeight: FontWeight.w500)),
                       shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(20.0)),
                       onPressed: ()=>_validateInputs(),
@@ -221,23 +134,9 @@ class _AskLoginState extends State<AskLogin> {
           SizedBox(height:height/10),
           Column(
             children: <Widget>[
-              RaisedButton(
-                highlightElevation: 0.0,
-                splashColor: AppColors.tertiary,
-                highlightColor: AppColors.tertiary,
-                elevation: 0.0,
-                color: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-                child: Text(
-                  "LOGIN",
-                  style: GoogleFonts.heebo(textStyle:TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 28))
-                ),
-                  onPressed: () {
-                    login();
-                  },
-              ),
-              SizedBox(height:height/40),
+              SignInButton(Buttons.GoogleDark, onPressed:()=>signInWithGoogle(context)),
+              SignInButton(Buttons.Facebook, onPressed:()=>MobileLogin()),
+              SizedBox(height:height/50),
               OutlineButton(
                 highlightedBorderColor: AppColors.tertiary,
                 borderSide: BorderSide(color: AppColors.primary, width: 2.0),
@@ -247,12 +146,20 @@ class _AskLoginState extends State<AskLogin> {
                   shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(30.0),
                   ),
-                child: Text("REGISTER",style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                    fontSize: 28),),
+                child: Container(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.phone),
+                      Text("Login using Phone No.",style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        fontSize: 22),
+                      ),
+                    ],
+                )),
                   onPressed: () { 
-                    register();
+                    MobileLogin();
                   },
               ),
             ],

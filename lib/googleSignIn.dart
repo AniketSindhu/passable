@@ -1,13 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/firebaseAdd.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 String name;
 String email;
 String imageUrl;
+String phoneNumber;
 
-Future<String> signInWithGoogle() async {
+Future<String> signInWithGoogle(BuildContext context) async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
@@ -28,11 +33,15 @@ Future<String> signInWithGoogle() async {
   assert(user.email != null);
   assert(user.displayName != null);
   assert(user.photoUrl != null);
-  
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('login', true);
+  prefs.setString('userid', user.uid);
   name = user.displayName;
   email = user.email;
   imageUrl = user.photoUrl;
-
+  phoneNumber=user.phoneNumber;
+  FirebaseAdd(email, name, phoneNumber, user.uid).addUser();
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
   return 'signInWithGoogle succeeded: $user';
 }
 

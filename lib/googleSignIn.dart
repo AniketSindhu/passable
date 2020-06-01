@@ -32,13 +32,11 @@ Future<String> signInWithGoogle(BuildContext context) async {
   assert(user.uid == currentUser.uid);
   assert(user.email != null);
   assert(user.displayName != null);
-  assert(user.photoUrl != null);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setBool('login', true);
   prefs.setString('userid', user.uid);
   name = user.displayName;
   email = user.email;
-  imageUrl = user.photoUrl;
   phoneNumber=user.phoneNumber;
   FirebaseAdd(email, name, phoneNumber, user.uid).addUser();
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
@@ -47,6 +45,5 @@ Future<String> signInWithGoogle(BuildContext context) async {
 
 void signOutGoogle() async{
   await googleSignIn.signOut();
-
   print("User Sign Out");
 }

@@ -26,8 +26,8 @@ class _AskLoginState extends State<AskLogin> {
   String actualCode,status;
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
-//    If all data are correct then save data to out variables
       _formKey.currentState.save();
+      phoneSignin();
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
@@ -39,14 +39,24 @@ class _AskLoginState extends State<AskLogin> {
       });
     }
   }
-void phoneSignin(String phone) async{
+void phoneSignin() async{
  
   final PhoneCodeSent codeSent =
       (String verificationId, [int forceResendingToken]) async {
     this.actualCode = verificationId;
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: AppColors.secondary,
+          scrollable: true,
+          title: Text("Verification"),
+          content: Center(child:Text("$status")),
+        );
+      });
     setState(() {
-      print('Code sent to $phone');
-      status = "\nEnter the code sent to " + phone;
+      print('Code sent to $_phone');
+      status = "\nEnter the code sent to " + _phone;
     });
   };
 
@@ -98,7 +108,7 @@ void phoneSignin(String phone) async{
      };
 
       await _auth.verifyPhoneNumber(
-        phoneNumber: phone,
+        phoneNumber: _phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,

@@ -4,11 +4,13 @@ import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/googleSignIn.dart';
-import 'package:plan_it_on/googleSignIn.dart';
 import 'clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+import 'otpScreen.dart';
+
 
 class AskLogin extends StatefulWidget {
   @override
@@ -22,12 +24,11 @@ class _AskLoginState extends State<AskLogin> {
   final controllName=TextEditingController();
   bool _autoValidate = false;
   String _phone,_name;
-  final FirebaseAuth _auth=FirebaseAuth.instance;
-  String actualCode,status;
+
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      phoneSignin();
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>OTP(_phone,_name)));
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
@@ -39,82 +40,6 @@ class _AskLoginState extends State<AskLogin> {
       });
     }
   }
-void phoneSignin() async{
- 
-  final PhoneCodeSent codeSent =
-      (String verificationId, [int forceResendingToken]) async {
-    this.actualCode = verificationId;
-    showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          backgroundColor: AppColors.secondary,
-          scrollable: true,
-          title: Text("Verification"),
-          content: Center(child:Text("$status")),
-        );
-      });
-    setState(() {
-      print('Code sent to $_phone');
-      status = "\nEnter the code sent to " + _phone;
-    });
-  };
-
-  final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
-      (String verificationId) {
-    this.actualCode = verificationId;
-    setState(() {
-      status = "\nAuto retrieval time out";
-    });
-  };
-
-  final PhoneVerificationFailed verificationFailed =
-     (AuthException authException) {
-    setState(() {
-      status = '${authException.message}';
-      print("Error message: " + status);
-      if (authException.message.contains('not authorized'))
-        status = 'Something has gone wrong, please try later';
-      else if (authException.message.contains('Network'))
-        status = 'Please check your internet connection and try again';
-      else
-        status = 'Something has gone wrong, please try later';
-    });
-  };
-
-  final PhoneVerificationCompleted verificationCompleted =
-      (AuthCredential auth) {
-   setState(() {
-     status = 'Auto retrieving verification code';
-    });
-    _auth
-      .signInWithCredential(auth)
-      .then((AuthResult value) {
-        if (value.user != null) {
-          setState(() {
-            status = 'Authentication successful';
-          });
-          onAuthenticationSuccessful();
-        } else {
-         setState(() {
-           status = 'Invalid code/invalid authentication';
-         });
-       }
-      }).catchError((error) {
-        setState(() {
-         status = 'Something has gone wrong, please try later';
-      });
-      });
-     };
-
-      await _auth.verifyPhoneNumber(
-        phoneNumber: _phone,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: null);
-    }
       MobileLogin(){
         _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
           return Container(
@@ -147,6 +72,7 @@ void phoneSignin() async{
                             hint: "Phone",
                             validator:(input)=>input.length<13?"*enter valid phone number":null,
                             controller: controllPhone,
+                            number: true,
                             ),
                             SizedBox(height:10),
                             CustomTextField(
@@ -158,6 +84,7 @@ void phoneSignin() async{
                             validator:(input)=>input.isEmpty ? "*Required" : null,
                             maxLines: 1,
                             controller: controllName,
+                            number: false,
                               ),
                             ],
                           ),
@@ -274,7 +201,8 @@ class CustomTextField extends StatelessWidget {
       this.controller,
       this.maxLines,
       this.minLines,
-      this.onSaved});
+      this.onSaved,
+      this.number});
   final TextEditingController controller;
   final FormFieldSetter<String> onSaved;
   final int maxLines;
@@ -282,6 +210,8 @@ class CustomTextField extends StatelessWidget {
   final Icon icon;
   final String hint;
   final bool obsecure;
+  final bool number;
+
   final FormFieldValidator<String> validator;
   @override
   Widget build(BuildContext context) {
@@ -293,6 +223,7 @@ class CustomTextField extends StatelessWidget {
         maxLines: maxLines,
         minLines: minLines,
         obscureText: obsecure,
+        keyboardType: number?TextInputType.number:TextInputType.text,
         textCapitalization: TextCapitalization.sentences,
         controller: controller,
         style: TextStyle(

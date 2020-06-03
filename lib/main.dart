@@ -23,6 +23,10 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(),
+      routes: {
+        'login':(context)=>AskLogin(),
+        'homepage':(context)=>HomePage()
+      },
       debugShowCheckedModeBanner: false,
     );
   }
@@ -40,6 +44,10 @@ class MyApp1 extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: AskLogin(),
+      routes: {
+        'login':(context)=>AskLogin(),
+        'home':(context)=>HomePage()
+      },
       debugShowCheckedModeBanner: false,
     );
   }

@@ -30,6 +30,7 @@ dependencies:
   flutter_signin_button: ^1.0.0
   shared_preferences: ^0.5.7+3
   cloud_firestore: ^0.13.6
+  otp_text_field: ^1.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

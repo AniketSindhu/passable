@@ -160,7 +160,7 @@ String actualCode,status;
                         ),
                         alignment: Alignment.bottomCenter,
                       ),
-                    )
+                    ),
                   ]
                 )
               );

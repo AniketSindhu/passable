@@ -46,7 +46,7 @@ class MyApp1 extends StatelessWidget {
       home: AskLogin(),
       routes: {
         'login':(context)=>AskLogin(),
-        'home':(context)=>HomePage()
+        'homepage':(context)=>HomePage()
       },
       debugShowCheckedModeBanner: false,
     );

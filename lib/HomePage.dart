@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
+import 'package:plan_it_on/publicEvent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,16 +26,20 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     shared();
   }
-  void getData() {
+  void getData() async{
     if(uid!=null){
     userRef = Firestore.instance.collection('users').document(uid);
-     userRef.get().then((snapshot){
+    await userRef.get().then((snapshot){
+      if(mounted)
+      setState(() {
         name=snapshot.data['name'];
-        email=snapshot.data['email'];        
+        email=snapshot.data['email'];           
+      });       
       });
     }
   }
       Widget build(BuildContext context) {
+        getData();
         double height=SizeConfig.getHeight(context);
         double width=SizeConfig.getWidth(context);
         return Scaffold(
@@ -56,7 +61,29 @@ class _HomePageState extends State<HomePage> {
                         ] 
                       )
                     ),
-                    Icon(Icons.more_horiz,color: AppColors.primary,size:30)
+                    PopupMenuButton(
+                      icon:Icon(Icons.more_horiz,color: AppColors.primary,size:30),
+                      color: AppColors.primary,
+                      itemBuilder: (context){
+                        var list=List<PopupMenuEntry<Object>>();
+                        list.add(PopupMenuItem(child: Text("Profile",style: TextStyle(color:AppColors.tertiary),)));
+                        list.add(PopupMenuDivider(height: 4,));
+                        list.add(PopupMenuItem(
+                          child: Text("Logout",style: TextStyle(color:AppColors.tertiary),),
+                          value: 2,
+                        ));
+                        return list;
+                      },
+                      onSelected:(value)async{
+                        if(value==2)
+                        {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.clear();
+                          signOutGoogle();
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AskLogin()),ModalRoute.withName('homepage'));
+                        }
+                      },
+                    )
                   ],
                 ),
               ),
@@ -82,14 +109,45 @@ class _HomePageState extends State<HomePage> {
                 highlightColor: AppColors.tertiary,
                 splashColor: AppColors.tertiary,
                 hoverColor: AppColors.tertiary,
-                onPressed:() async{
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.clear();
-                signOutGoogle();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AskLogin()));
+                onPressed:() {
+                  showDialog(
+                    context: context,
+                    builder: (context){
+                      return AlertDialog(
+                        backgroundColor: AppColors.secondary,
+                        title: Center(child: Text("What type of event?",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w700)))),
+                        content: Container(
+                          height: height/4,
+                          child:Center(
+                            child: Column(
+                              children: <Widget>[
+                                OutlineButton(
+                                  onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent()));},
+                                  child: Text("Public event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
+                                  color: AppColors.tertiary,
+                                  borderSide: BorderSide(color:AppColors.tertiary,width:4),
+                                  splashColor: AppColors.primary,                      
+                                ),
+                                SizedBox(height: height/60),
+                                Text("OR",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w800)),
+                                SizedBox(height: height/60),
+                                OutlineButton(
+                                  onPressed: (){},
+                                  child: Text("Private event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
+                                  color: AppColors.tertiary,
+                                  borderSide: BorderSide(color:AppColors.tertiary,width:4),  
+                                  splashColor: AppColors.primary,                               
+                                )                                
+                              ],
+                            ),
+                          )
+                        ),
+                      );
+                    }
+                  );
                 },
               ),
-              Text("$name $email")
+              Text("$name")
             ],
           ),
         );

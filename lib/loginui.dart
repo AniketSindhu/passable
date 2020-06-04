@@ -202,7 +202,10 @@ class CustomTextField extends StatelessWidget {
       this.maxLines,
       this.minLines,
       this.onSaved,
-      this.number});
+      this.radius,
+      this.number,
+      this.color});
+
   final TextEditingController controller;
   final FormFieldSetter<String> onSaved;
   final int maxLines;
@@ -211,12 +214,14 @@ class CustomTextField extends StatelessWidget {
   final String hint;
   final bool obsecure;
   final bool number;
+  final double radius;
+  final Color color;
 
   final FormFieldValidator<String> validator;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 35, right: 35),
+      padding: EdgeInsets.only(left: 25, right: 25),
       child: TextFormField(
         onSaved: onSaved,
         validator: validator,
@@ -234,17 +239,17 @@ class CustomTextField extends StatelessWidget {
             hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: AppColors.primary),
             hintText: hint,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.circular(radius==null?40:radius),
               borderSide: BorderSide(
-                color: AppColors.primary,
-                width: 3,
+                color: color==null?AppColors.primary:color,
+                width: 2,
               ),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.circular(radius==null?40:radius),
               borderSide: BorderSide(
-                color: AppColors.primary,
-                width: 3,
+                color: color==null?AppColors.primary:color,
+                width: 2,
               ),
             ),
             prefixIcon: Padding(

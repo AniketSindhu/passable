@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
 import 'globals.dart' as globals;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:math';
 
 class PublicEvent extends StatefulWidget {
   String uid;
@@ -257,34 +258,33 @@ class _CongoScreenState extends State<CongoScreen> {
    _controllerCenter =
       ConfettiController(duration: const Duration(seconds: 3));
   }
-  turnfalse(){
-    setState(() {
-      globals.eventAddLoading=false;
-    });
-  }
   Widget build(BuildContext context) {
-    turnfalse();
+     _controllerCenter.play();
     return Scaffold(
       body: Container(
         child: Center(
-         child: globals.eventAddLoading==true?
-          SpinKitRotatingCircle(
-            color:AppColors.secondary,
-            size:50
-          ):
+         child: 
           Stack(
             children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: ConfettiWidget(
+                 confettiController: _controllerCenter,
+                 blastDirectionality: BlastDirectionality.explosive,
+                 numberOfParticles: 30,
+                 gravity: 0.1,
+                ),
+              ),           
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Congratulations your event is created",style: TextStyle(color:AppColors.primary,fontSize:20,fontWeight:FontWeight.w600),),
                     SizedBox(height:20),
-                    Text("Invite guests using the share button below")
+                    Text("Invite guests using the share button below",style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              ConfettiWidget(confettiController: _controllerCenter)
             ],
           )
         ),

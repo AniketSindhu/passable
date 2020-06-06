@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'globals.dart' as globals;
+import 'publicEvent.dart';
 class FirebaseAdd{
 
   addUser(String name,String email, String phoneNumber,String uid){
@@ -19,7 +20,6 @@ class FirebaseAdd{
     print(taskSnapshot);
     await firebaseStorageRef.getDownloadURL().then((fileURL) async {
         _uploadedFileURL = fileURL;
-        globals.eventAddLoading = false;
       });
     Firestore.instance.collection('users').document(uid).collection('eventsHosted').document(eventCode)
     .setData({'eventCode':eventCode});

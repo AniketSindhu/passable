@@ -251,21 +251,23 @@ class CongoScreen extends StatefulWidget {
 
 class _CongoScreenState extends State<CongoScreen> {
   ConfettiController _controllerCenter;
-  bool loading;
   @override
   void initState(){
     super.initState();
    _controllerCenter =
       ConfettiController(duration: const Duration(seconds: 3));
   }
-  Widget build(BuildContext context) {
+  turnfalse(){
     setState(() {
-      loading=globals.eventAddLoading;
+      globals.eventAddLoading=false;
     });
+  }
+  Widget build(BuildContext context) {
+    turnfalse();
     return Scaffold(
       body: Container(
         child: Center(
-         child: loading==true?
+         child: globals.eventAddLoading==true?
           SpinKitRotatingCircle(
             color:AppColors.secondary,
             size:50
@@ -274,10 +276,11 @@ class _CongoScreenState extends State<CongoScreen> {
             children: <Widget>[
               Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Congratulations your event is created",style: TextStyle(color:AppColors.primary,fontSize:20,fontWeight:FontWeight.w600),),
                     SizedBox(height:20),
-                    Text("Invite people using the share button below")
+                    Text("Invite guests using the share button below")
                   ],
                 ),
               ),

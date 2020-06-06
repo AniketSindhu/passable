@@ -4,12 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'globals.dart' as globals;
 class FirebaseAdd{
 
-  String name,uid,phoneNumber,email;
-  FirebaseAdd(this.email,this.name,this.phoneNumber,this.uid);
-  addUser(){
+  addUser(String name,String email, String phoneNumber,String uid){
     Firestore.instance.collection('users').document(uid)
     .setData({ 'name': name, 'email': email,'phoneNumber': phoneNumber});
 }
+  addEvent (String eventName,String eventCode,String eventDescription,String eventAddress,int maxAttendee,File _image,DateTime dateTime,String uid) async {
     String _uploadedFileURL;
     String fileName = "Banners/$eventCode";
     globals.eventAddLoading=true;

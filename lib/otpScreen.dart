@@ -27,7 +27,7 @@ String actualCode,status;
     phoneSignin();
   }
   void onAuthenticationSuccessful(AuthResult result) async {
-    FirebaseAdd(result.user.email, widget.name, result.user.phoneNumber, result.user.uid).addUser();
+    FirebaseAdd().addUser( widget.name, result.user.email, result.user.phoneNumber, result.user.uid);
     SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('login', true);
       prefs.setString('userid', result.user.uid);

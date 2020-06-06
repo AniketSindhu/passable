@@ -38,7 +38,7 @@ Future<String> signInWithGoogle(BuildContext context) async {
   name = user.displayName;
   email = user.email;
   phoneNumber=user.phoneNumber;
-  FirebaseAdd(email, name, phoneNumber, user.uid).addUser();
+  FirebaseAdd().addUser(name, email, phoneNumber, user.uid);
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
   return 'signInWithGoogle succeeded: $user';
 }

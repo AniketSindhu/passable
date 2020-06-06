@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               children: <Widget>[
                                 OutlineButton(
-                                  onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent()));},
+                                  onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));},
                                   child: Text("Public event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
                                   color: AppColors.tertiary,
                                   borderSide: BorderSide(color:AppColors.tertiary,width:4),

@@ -204,7 +204,8 @@ class CustomTextField extends StatelessWidget {
       this.onSaved,
       this.radius,
       this.number,
-      this.color});
+      this.color,
+      this.width});
 
   final TextEditingController controller;
   final FormFieldSetter<String> onSaved;
@@ -216,6 +217,7 @@ class CustomTextField extends StatelessWidget {
   final bool number;
   final double radius;
   final Color color;
+  final double width;
 
   final FormFieldValidator<String> validator;
   @override
@@ -249,7 +251,7 @@ class CustomTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius==null?40:radius),
               borderSide: BorderSide(
                 color: color==null?AppColors.primary:color,
-                width: 2,
+                width: width==null?3:width,
               ),
             ),
             prefixIcon: Padding(

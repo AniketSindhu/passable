@@ -11,9 +11,7 @@ import 'config/size.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
-import 'globals.dart' as globals;
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:flutter_share/flutter_share.dart';
 
 class PublicEvent extends StatefulWidget {
   String uid;
@@ -268,6 +266,21 @@ class _CongoScreenState extends State<CongoScreen> {
     double width=SizeConfig.getWidth(context);
      _controllerCenter.play();
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left:15.0),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: FloatingActionButton.extended(
+            label: Text('Finish'),
+            onPressed:(){
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.play_arrow),
+            tooltip: 'continue',
+            backgroundColor: Colors.redAccent,
+          ),
+        ),
+      ),
       body: Container(
         child: Center(
          child: 
@@ -315,7 +328,14 @@ class _CongoScreenState extends State<CongoScreen> {
                         splashColor: AppColors.primary,
                         highlightColor: AppColors.primary,
                         icon: Icon(Icons.share,color: Colors.black,),
-                        onPressed: null),
+                        onPressed:()async{
+                          await FlutterShare.share(
+                            title: 'Get entry pass for ${widget.eventName}',
+                            text: 'Enter the code ''${widget.eventCode}'' to get an entry pass for the ${widget.eventName} happening on ${DateFormat('dd-MM-yyyy  hh:mm a').format(widget.dateTime)}',
+                            linkUrl: 'https://flutter.dev/',
+                            chooserTitle: 'Get entry pass for ${widget.eventName}'
+                          );
+                        }),
                     ),
                     Text("Invite guests",style: TextStyle(fontWeight:FontWeight.w500),),
                     SizedBox(height:10)

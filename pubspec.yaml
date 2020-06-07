@@ -39,6 +39,8 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   confetti: ^0.5.2
   flutter_share: ^1.0.2+1
+  bottom_navy_bar: ^5.4.0
+
 
 
   # The following adds the Cupertino Icons font to your application.

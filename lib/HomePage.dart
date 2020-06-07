@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -17,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   DocumentReference userRef;
   String name,email;
   String uid;
+  int _selectedIndex=0;
   shared() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid=prefs.getString('userid');
@@ -43,6 +46,72 @@ class _HomePageState extends State<HomePage> {
         double height=SizeConfig.getHeight(context);
         double width=SizeConfig.getWidth(context);
         return Scaffold(
+          floatingActionButton: FloatingActionButton.extended(
+            backgroundColor: AppColors.tertiary,
+            onPressed: (){
+             showDialog(
+               context: context,
+              builder: (context){
+                return AlertDialog(
+                  backgroundColor: AppColors.secondary,
+                   title: Center(child: Text("What type of event?",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w700)))),
+                   content: Container(
+                     height: height/4,
+                     child:Center(
+                       child: Column(
+                         children: <Widget>[
+                           OutlineButton(
+                             onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));},
+                             child: Text("Public event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
+                             color: AppColors.tertiary,
+                             borderSide: BorderSide(color:AppColors.tertiary,width:4),
+                             splashColor: AppColors.primary,                      
+                           ),
+                           SizedBox(height: height/60),
+                           Text("OR",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w800)),
+                           SizedBox(height: height/60),
+                           OutlineButton(
+                             onPressed: (){},
+                             child: Text("Private event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
+                             color: AppColors.tertiary,
+                             borderSide: BorderSide(color:AppColors.tertiary,width:4),  
+                             splashColor: AppColors.primary,                               
+                           )                                
+                         ],
+                       ),
+                     )
+                   ),
+                 );
+               }
+             );
+            },
+            label: Text("Host an event",style: TextStyle(fontWeight:FontWeight.w500),),
+            icon: Icon(Icons.add),),
+          bottomNavigationBar: BottomNavyBar(
+           selectedIndex: _selectedIndex,
+           showElevation: true,
+           curve: Curves.ease, // use this to remove appBar's elevation
+            onItemSelected: (index) => setState(() {
+              _selectedIndex = index;
+            }),
+            items: [
+              BottomNavyBarItem(
+                icon: Icon(Icons.apps),
+                title: Text('Upcoming'),
+                activeColor: Colors.red,
+              ),
+               BottomNavyBarItem(
+                   icon: Icon(Icons.people),
+                   title: Text('Hosted'),
+                   activeColor: Colors.purpleAccent
+               ),
+               BottomNavyBarItem(
+                   icon: Icon(Icons.message),
+                   title: Text('Joined'),
+                   activeColor: Colors.pink
+              ),
+            ],
+          ),
           resizeToAvoidBottomPadding: false,
           body: Column(
             children: <Widget>[
@@ -58,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                           TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
                           TextSpan(text:"it",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
                           TextSpan(text:"'on",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold)))
-                        ] 
+                        ]
                       )
                     ),
                     PopupMenuButton(
@@ -100,54 +169,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: height/10,),
-              Text("Add an event",style: TextStyle(color: Colors.grey[800],fontSize: 15,fontWeight: FontWeight.w500),),
-              SizedBox(height: height/30,),
-              IconButton(
-                icon:Icon(Icons.add_circle,color:AppColors.secondary),
-                iconSize: 70,
-                highlightColor: AppColors.tertiary,
-                splashColor: AppColors.tertiary,
-                hoverColor: AppColors.tertiary,
-                onPressed:() {
-                  showDialog(
-                    context: context,
-                    builder: (context){
-                      return AlertDialog(
-                        backgroundColor: AppColors.secondary,
-                        title: Center(child: Text("What type of event?",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w700)))),
-                        content: Container(
-                          height: height/4,
-                          child:Center(
-                            child: Column(
-                              children: <Widget>[
-                                OutlineButton(
-                                  onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));},
-                                  child: Text("Public event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
-                                  color: AppColors.tertiary,
-                                  borderSide: BorderSide(color:AppColors.tertiary,width:4),
-                                  splashColor: AppColors.primary,                      
-                                ),
-                                SizedBox(height: height/60),
-                                Text("OR",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w800)),
-                                SizedBox(height: height/60),
-                                OutlineButton(
-                                  onPressed: (){},
-                                  child: Text("Private event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
-                                  color: AppColors.tertiary,
-                                  borderSide: BorderSide(color:AppColors.tertiary,width:4),  
-                                  splashColor: AppColors.primary,                               
-                                )                                
-                              ],
-                            ),
-                          )
-                        ),
-                      );
-                    }
-                  );
-                },
-              ),
-              Text("$name")
+              SizedBox(height:height/20),
+              Text("Nothing to show up here :(")
             ],
           ),
         );

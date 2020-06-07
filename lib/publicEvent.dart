@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:plan_it_on/firebaseAdd.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:random_string/random_string.dart';
+import 'clipper.dart';
 import 'config/config.dart';
 import 'config/size.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
 import 'globals.dart' as globals;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'dart:math';
+
 
 class PublicEvent extends StatefulWidget {
   String uid;
@@ -24,7 +25,7 @@ class PublicEvent extends StatefulWidget {
 class _PublicEventState extends State<PublicEvent> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
-  String eventName,eventDescription,hostAddress,eventAddress,eventCode;
+  String eventName,eventDescription,eventAddress,eventCode;
   int maxAttendees;
   bool imageDone=false;
   File _image;
@@ -39,7 +40,7 @@ class _PublicEventState extends State<PublicEvent> {
       _formKey.currentState.save();
       eventCode=randomAlphaNumeric(6);
       FirebaseAdd().addEvent(eventName, eventCode, eventDescription, eventAddress, maxAttendees,_image,dateTime, widget.uid);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CongoScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CongoScreen(eventName,eventCode,eventAddress,_image,dateTime)));
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
@@ -246,6 +247,10 @@ class _PublicEventState extends State<PublicEvent> {
   }
 }
 class CongoScreen extends StatefulWidget {
+  String eventCode,eventName,eventAddress;
+  DateTime dateTime;
+  File image;
+  CongoScreen(this.eventName,this.eventCode,this.eventAddress,this.image,this.dateTime,);
   @override
   _CongoScreenState createState() => _CongoScreenState();
 }
@@ -259,6 +264,8 @@ class _CongoScreenState extends State<CongoScreen> {
       ConfettiController(duration: const Duration(seconds: 3));
   }
   Widget build(BuildContext context) {
+    double height=SizeConfig.getHeight(context);
+    double width=SizeConfig.getWidth(context);
      _controllerCenter.play();
     return Scaffold(
       body: Container(
@@ -267,6 +274,55 @@ class _CongoScreenState extends State<CongoScreen> {
           Stack(
             children: <Widget>[
               Align(
+                child: ClipPath(
+                  child: Container(
+                    color: AppColors.tertiary,
+                    height: 100,
+                  ),
+                  clipper: BottomWaveClipper(),
+                ),
+              alignment: Alignment.bottomCenter,
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top:height/20),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal:10.0),
+                        child: Text("Your Event is created",style:GoogleFonts.lora(textStyle:TextStyle(color:AppColors.primary,fontSize:30,fontWeight:FontWeight.w800),)),
+                      ),
+                    ),
+                    SizedBox(height:10),
+                    Text("Event Code:${widget.eventCode}",style:GoogleFonts.poppins(textStyle:TextStyle(fontSize:22,fontWeight: FontWeight.bold,color: Colors.red),)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 5),
+                      child: Text("Share the event code with your guests and they will get an entry pass for the event",style:GoogleFonts.poppins(textStyle:TextStyle(fontSize:14,fontWeight:FontWeight.w500,fontStyle: FontStyle.italic,),),textAlign: TextAlign.center,),
+                    ),
+                    Image.file(widget.image,width: width*0.8,height: height*0.45),
+                    Text("${widget.eventName}",textAlign: TextAlign.center,style:GoogleFonts.poppins(textStyle:TextStyle(fontSize:22,fontWeight: FontWeight.bold,color: AppColors.primary),)),
+                    Text("At ${widget.eventAddress}",style:GoogleFonts.poppins(textStyle:TextStyle(fontSize:16,fontWeight: FontWeight.bold),),textAlign: TextAlign.center,),
+                    Text('On ${DateFormat('dd-MM-yyyy  hh:mm a').format(widget.dateTime)}',style:GoogleFonts.poppins(textStyle:TextStyle(fontSize:18,fontWeight: FontWeight.bold),)),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        shape:BoxShape.circle,
+                        border: Border.all(color:Colors.black)
+                      ),
+                      child: IconButton(
+                        color: AppColors.primary,
+                        splashColor: AppColors.primary,
+                        highlightColor: AppColors.primary,
+                        icon: Icon(Icons.share,color: Colors.black,),
+                        onPressed: null),
+                    ),
+                    Text("Invite guests",style: TextStyle(fontWeight:FontWeight.w500),),
+                    SizedBox(height:10)
+                  ],
+                ),
+              ),              
+              Align(
                 alignment: Alignment.center,
                 child: ConfettiWidget(
                  confettiController: _controllerCenter,
@@ -274,17 +330,7 @@ class _CongoScreenState extends State<CongoScreen> {
                  numberOfParticles: 30,
                  gravity: 0.1,
                 ),
-              ),           
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Congratulations your event is created",style: TextStyle(color:AppColors.primary,fontSize:20,fontWeight:FontWeight.w600),),
-                    SizedBox(height:20),
-                    Text("Invite guests using the share button below",style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ),
+              ),          
             ],
           )
         ),

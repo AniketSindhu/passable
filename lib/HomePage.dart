@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:plan_it_on/JoinedEvents.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:plan_it_on/publicEvent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'HostedEvents.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,8 +44,12 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+  Future getAllEvents() async{
+    var firestore = Firestore.instance;
+    QuerySnapshot qn= await firestore.collection('events').orderBy('dateTime').getDocuments();
+    return qn.documents;
+  }
       Widget build(BuildContext context) {
-        getData();
         double height=SizeConfig.getHeight(context);
         double width=SizeConfig.getWidth(context);
         return Scaffold(
@@ -113,7 +120,9 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           resizeToAvoidBottomPadding: false,
-          body: Column(
+          body: 
+          _selectedIndex==1?
+          ListView(
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(horizontal:width/15,vertical:height/15),
@@ -156,23 +165,42 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Container(
-                width: width,
-                height: height/2,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SvgPicture.asset(
-                      'assets/event.svg',
-                      semanticsLabel: 'Event Illustration'
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height:height/20),
-              Text("Nothing to show up here :(")
+              FutureBuilder(
+                future: getAllEvents(),
+                builder: (BuildContext context,snapshot){
+                  if(snapshot.connectionState==ConnectionState.waiting)
+                  {
+                    return Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60));
+                  }
+
+                  else
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    padding: EdgeInsets.all(10),
+                    itemBuilder: (context,index){
+                      return Stack(
+                        children: [
+                          Image.network(snapshot.data[index].data['eventBanner'],height:300,width: width,),
+                          Positioned(
+                            left:0,
+                            top:20,
+                            child: Card(
+                              child: Column(
+                                children:<Widget>[
+                                  Center(child: Text("${snapshot.data[index].data['eventName']}")),
+                                  Text("Address:${snapshot.data[index].data['eventAddress']}")
+                                ]
+                              ),
+                              color: Colors.white,
+                            ),)
+                        ], 
+                      );
+                  });
+              })
             ],
-          ),
+          ):
+          _selectedIndex==2?
+          HostedEvents():JoinedEvents()
         );
       }
     }

@@ -166,11 +166,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom:10.0),
-                child: Container(
-                  child:Text("All events",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 20,fontWeight: FontWeight.w700))),),
-              ),
               FutureBuilder(
                 future: getAllEvents(),
                 builder: (BuildContext context,snapshot){

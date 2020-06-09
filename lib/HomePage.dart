@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
           ),
           resizeToAvoidBottomPadding: false,
           body: 
-          _selectedIndex==1?
+          _selectedIndex==0?
           Column(
             children: <Widget>[
               Container(
@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> {
               })
             ],
           ):
-          _selectedIndex==2?
+          _selectedIndex==1?
           HostedEvents():JoinedEvents()
         );
       }

@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   }
   Future getAllEvents() async{
     var firestore = Firestore.instance;
-    QuerySnapshot qn= await firestore.collection('events').orderBy('dateTime').getDocuments();
+    QuerySnapshot qn= await firestore.collection('events').orderBy('eventDateTime').getDocuments();
     return qn.documents;
   }
       Widget build(BuildContext context) {
@@ -122,7 +123,7 @@ class _HomePageState extends State<HomePage> {
           resizeToAvoidBottomPadding: false,
           body: 
           _selectedIndex==1?
-          ListView(
+          Column(
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(horizontal:width/15,vertical:height/15),
@@ -165,37 +166,85 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom:10.0),
+                child: Container(
+                  child:Text("All events",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 20,fontWeight: FontWeight.w700))),),
+              ),
               FutureBuilder(
                 future: getAllEvents(),
                 builder: (BuildContext context,snapshot){
                   if(snapshot.connectionState==ConnectionState.waiting)
                   {
-                    return Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60));
+                    return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
                   }
-
+                  if(snapshot.data.length==0){
+                  return Column(
+                    children: [
+                      Container(
+                        width: width,
+                        height: height/2,
+                        child: Center(
+                         child: Padding(
+                             padding: const EdgeInsets.all(16.0),
+                            child: SvgPicture.asset(
+                              'assets/event.svg',
+                              semanticsLabel: 'Event Illustration'
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height:height/20),
+                      Text("Nothing to show up here :(")
+                    ],
+                  );}
                   else
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    padding: EdgeInsets.all(10),
-                    itemBuilder: (context,index){
-                      return Stack(
-                        children: [
-                          Image.network(snapshot.data[index].data['eventBanner'],height:300,width: width,),
-                          Positioned(
-                            left:0,
-                            top:20,
-                            child: Card(
-                              child: Column(
-                                children:<Widget>[
-                                  Center(child: Text("${snapshot.data[index].data['eventName']}")),
-                                  Text("Address:${snapshot.data[index].data['eventAddress']}")
-                                ]
+                  return Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) =>
+                        const SizedBox(height: 20.0),  
+                      itemCount: snapshot.data.length,
+                      padding: EdgeInsets.symmetric(horizontal:10),
+                      itemBuilder: (context,index){
+                        return Stack(
+                          children: [
+                            Center(
+                              child: Card(   
+                                shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(12)),),                          
+                                elevation: 20,
+                                child:ClipRRect(
+                                  borderRadius:BorderRadius.all(Radius.circular(12)),
+                                  child: Image.network(snapshot.data[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
                               ),
-                              color: Colors.white,
-                            ),)
-                        ], 
-                      );
-                  });
+                            ),
+                            Positioned(
+                              left:10,
+                              top:100,
+                              child: Container(
+                                width: width*0.6,
+                                child: Column(
+                                  children:<Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 2),
+                                      child: Center(child: Text("${snapshot.data[index].data['eventName']}",style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w800,color:AppColors.primary,fontSize: 20),),textAlign: TextAlign.center,)),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Center(child:Text('${DateFormat('dd-MM-yyyy AT hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),)),
+                                    ),   
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("${snapshot.data[index].data['eventAddress']}",textAlign: TextAlign.center,style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 12))),
+                                    )
+                                  ]
+                                ),
+                                color: AppColors.secondary,
+                              ),
+                            )
+                          ], 
+                        );
+                    }),
+                  );
               })
             ],
           ):

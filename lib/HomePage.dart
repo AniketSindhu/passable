@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                                                         Firestore.instance.collection('users').document(uid).collection('eventJoined').document(snapshot.data[index].data['eventCode']).setData({'eventCode':snapshot.data[index].data['eventCode'],'passCode':passCode});
                                                         Firestore.instance.collection('events').document(snapshot.data[index].data['eventCode']).updateData({'joined': snapshot.data[index].data['joined']+1});
                                                         Navigator.pop(context);
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode);}));
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,snapshot.data[index]);}));
                                                       }
                                                     },
                                                     textColor: AppColors.primary,

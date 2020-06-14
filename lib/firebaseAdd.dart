@@ -30,7 +30,8 @@ class FirebaseAdd{
       'eventAddress':eventAddress,
       'maxAttendee':maxAttendee,
       'eventDateTime':dateTime,
-      'eventBanner':_uploadedFileURL
+      'eventBanner':_uploadedFileURL,
+      'joined':0
     });
   }
 }

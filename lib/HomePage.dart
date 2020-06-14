@@ -240,10 +240,13 @@ class _HomePageState extends State<HomePage> {
                                                       print(snapshot.data[index].data['eventCode']);
                                                       if(snapshot.data[index].data['eventCode']!=eventCodeController.text)
                                                         print("wrong code entered");
+                                                      else if(snapshot.data[index].data['joined']>=snapshot.data[index].data['maxAttendee'])
+                                                        print('Event Full');
                                                       else
                                                       { passCode= randomAlphaNumeric(6);
                                                         Firestore.instance.collection("events").document(snapshot.data[index].data['eventCode']).collection('guests').document(passCode).setData({'user':uid,'passCode':passCode,'Scanned':false});
                                                         Firestore.instance.collection('users').document(uid).collection('eventJoined').document(snapshot.data[index].data['eventCode']).setData({'eventCode':snapshot.data[index].data['eventCode'],'passCode':passCode});
+                                                        Firestore.instance.collection('events').document(snapshot.data[index].data['eventCode']).updateData({'joined': snapshot.data[index].data['joined']+1});
                                                         Navigator.pop(context);
                                                         Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode);}));
                                                       }

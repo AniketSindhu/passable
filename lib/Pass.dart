@@ -6,6 +6,7 @@ import 'package:plan_it_on/config/size.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'clipper.dart';
 import 'config/config.dart';
+import 'package:social_media_buttons/social_media_buttons.dart';
 
 class Pass extends StatefulWidget {
   @override
@@ -24,18 +25,16 @@ class _PassState extends State<Pass> {
       backgroundColor: AppColors.tertiary,
       body: Stack(
         children: [
-          Expanded(
-             child: Align(
-              child: ClipPath(
-                child: Container(
-                   color: AppColors.secondary,
-                  height: 150,
-                ),
-                clipper: BottomWaveClipper(),
-               ),
-              alignment: Alignment.bottomCenter,
+          Align(
+           child: ClipPath(
+             child: Container(
+                color: AppColors.secondary,
+               height: 150,
+             ),
+             clipper: BottomWaveClipper(),
             ),
-          ),
+           alignment: Alignment.bottomCenter,
+            ),
           Container(
             child:Center(
               child: Column(
@@ -66,20 +65,21 @@ class _PassState extends State<Pass> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children:<Widget>[
                         Container(
+                          width: width/1.8,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children:<Widget>[
                               SizedBox(height:5),
                               Text("${widget.details.data['eventName']}",style: TextStyle(fontSize:25,fontWeight:FontWeight.w700),textAlign: TextAlign.left,),
                               SizedBox(height:20),
-                              Text("ADDRESS",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
-                              Text("${widget.details.data['eventAddress']}",style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
-                              SizedBox(height:10),
                               Text("DATE & TIME",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
                               Text('${DateFormat('dd-MM-yyyy, hh:mm a').format(widget.details.data['eventDateTime'].toDate())}',style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
                               SizedBox(height:10),
                               Text("PASS CODE",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
                               Text("${widget.eventCode}",style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
+                              SizedBox(height: 10,),
+                              Text("ADDRESS",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
+                              Text("${widget.details.data['eventAddress']}",style: TextStyle(fontSize:14,fontWeight:FontWeight.w500),textAlign: TextAlign.left,),
                             ],
                           ),
                         ),
@@ -102,8 +102,19 @@ class _PassState extends State<Pass> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text("One Pass, One Entry",style: TextStyle(color:Colors.red,fontSize: 25,fontWeight: FontWeight.w600),),
+                    child: Text("One Pass, One Entry",style: TextStyle(color:Colors.red,fontSize: 25,fontWeight: FontWeight.w700),),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children:<Widget>[
+                        SocialMediaButton.facebook(url:'',size:35,color: AppColors.primary,),
+                        SocialMediaButton.instagram(url: '',size:35,color: AppColors.primary,),
+                        SocialMediaButton.twitter(url: '',size: 35,color: AppColors.primary,),
+                      ]
+                    ),
+                  )
                 ],
               ),
             )

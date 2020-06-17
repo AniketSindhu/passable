@@ -236,12 +236,16 @@ class _HomePageState extends State<HomePage> {
                                               Expanded(
                                                 child: Center(
                                                   child: RaisedButton(
-                                                    onPressed:(){
-                                                      print(snapshot.data[index].data['eventCode']);
+                                                    onPressed:() async{
+                                                     final x= await Firestore.instance.collection('users').document(uid).collection('eventJoined').document(snapshot.data[index].data['eventCode']).get();
                                                       if(snapshot.data[index].data['eventCode']!=eventCodeController.text)
                                                         print("wrong code entered");
                                                       else if(snapshot.data[index].data['joined']>=snapshot.data[index].data['maxAttendee'])
                                                         print('Event Full');
+                                                      else if(x.exists)
+                                                        {
+                                                          print('Already Joined');
+                                                        }
                                                       else
                                                       { passCode= randomAlphaNumeric(6);
                                                         Firestore.instance.collection("events").document(snapshot.data[index].data['eventCode']).collection('guests').document(passCode).setData({'user':uid,'passCode':passCode,'Scanned':false});
@@ -308,7 +312,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ):
           _selectedIndex==1?
-          HostedEvents():JoinedEvents()
+          HostedEvents():JoinedEvents(uid)
         );
       }
     }

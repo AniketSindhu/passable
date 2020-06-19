@@ -10,9 +10,9 @@ class JoinedEvents extends StatefulWidget {
 class _JoinedEventsState extends State<JoinedEvents> {
   var firestore=Firestore.instance;
   Future getEvents() async{
-    List<String>eventCodes;
+    List<String>eventCodes=[];
     final QuerySnapshot result= await firestore.collection('users').document(widget.uid).collection('eventJoined').getDocuments();
-    result.documents.forEach((element) {eventCodes.add(element.data['eventCode']);});
+    result.documents.forEach((element)=>eventCodes.add(element.data['eventCode']));
     eventCodes.forEach((element)=>print(element));
     final QuerySnapshot joinedEventDetails=await firestore.collection('events').where("eventCode",whereIn:eventCodes).getDocuments();
     return joinedEventDetails.documents;
@@ -24,8 +24,9 @@ class _JoinedEventsState extends State<JoinedEvents> {
         future: getEvents(),
         builder:(context,snapshot){
           return ListView.builder(
+            itemCount: snapshot.data.length,
             itemBuilder:(context,index){
-              return ListTile(title: Text("ok"),);
+              return ListTile(title: Text("${snapshot.data[index].data['eventCode']}"),);
             }
           );
       })

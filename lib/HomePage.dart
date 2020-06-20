@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
           Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.symmetric(horizontal:width/15,vertical:height/15),
+                margin: EdgeInsets.only(left:width/15,top:height/15,right:width/15,bottom:height/30),
                 width: width,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,6 +168,13 @@ class _HomePageState extends State<HomePage> {
                       },
                     )
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text("Upcoming Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
                 ),
               ),
               FutureBuilder(

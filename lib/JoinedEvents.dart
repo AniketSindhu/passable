@@ -34,7 +34,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
       body:Column(
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(width/15,height/15,width/15,height/30),
+            margin: EdgeInsets.fromLTRB(width/15,height/15,width/15,height/50),
             width: width,
             child: RichText(
                text: TextSpan(
@@ -44,6 +44,13 @@ class _JoinedEventsState extends State<JoinedEvents> {
                   TextSpan(text:"'on",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold)))
                 ]
               )
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text("Joined Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
             ),
           ),
           FutureBuilder(

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Pass.dart';
 import 'config/config.dart';
 import 'googleSignIn.dart';
 import 'loginui.dart';
@@ -110,11 +111,28 @@ class _JoinedEventsState extends State<JoinedEvents> {
                                               padding: const EdgeInsets.fromLTRB(0,0,0,8.0),
                                               child: Align(
                                                 alignment:Alignment.bottomLeft,
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Text('${DateFormat('hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w600,fontSize: 18),),
-                                                    Text('${DateFormat('EEE, d MMMM').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w400,fontSize: 14),),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text('${DateFormat('hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w600,fontSize: 18),),
+                                                        Text('${DateFormat('EEE, d MMMM yyyy').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w400,fontSize: 14),),
+                                                      ],
+                                                    ),
+                                                    FlatButton(
+                                                      onPressed:()async{
+                                                        String passCode;
+                                                        await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').where('eventCode',isEqualTo:snapshot.data[index].data['eventCode']).getDocuments()
+                                                        .then((value){
+                                                          passCode=value.documents.elementAt(0).data['passCode'];
+                                                        });
+                                                        Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,snapshot.data[index]);}));
+                                                      },
+                                                      color: AppColors.tertiary,
+                                                      splashColor: AppColors.primary,
+                                                      child: Text("Show Pass",style: TextStyle(fontWeight: FontWeight.w600),))
                                                   ],
                                                 ),
                                               ),

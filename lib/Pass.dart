@@ -10,9 +10,9 @@ import 'package:social_media_buttons/social_media_buttons.dart';
 
 class Pass extends StatefulWidget {
   @override
-  String eventCode;
+  String passCode;
   DocumentSnapshot details;
-  Pass(this.eventCode,this.details);
+  Pass(this.passCode,this.details);
   _PassState createState() => _PassState();
 }
 
@@ -76,7 +76,7 @@ class _PassState extends State<Pass> {
                               Text('${DateFormat('dd-MM-yyyy, hh:mm a').format(widget.details.data['eventDateTime'].toDate())}',style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
                               SizedBox(height:10),
                               Text("PASS CODE",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
-                              Text("${widget.eventCode}",style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
+                              Text("${widget.passCode}",style: TextStyle(fontSize:18,fontWeight:FontWeight.w500),),
                               SizedBox(height: 10,),
                               Text("ADDRESS",style: TextStyle(fontSize:14,fontWeight:FontWeight.w400),),
                               Text("${widget.details.data['eventAddress']}",style: TextStyle(fontSize:14,fontWeight:FontWeight.w500),textAlign: TextAlign.left,),
@@ -93,7 +93,7 @@ class _PassState extends State<Pass> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 20,0),
                         child: QrImage(
-                          data: widget.eventCode,
+                          data: widget.passCode,
                           version: QrVersions.auto,
                           size: 200.0,
                         ),

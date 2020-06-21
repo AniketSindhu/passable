@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         double height=SizeConfig.getHeight(context);
         double width=SizeConfig.getWidth(context);
         return Scaffold(
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: _selectedIndex==0?FloatingActionButton.extended(
             backgroundColor: AppColors.tertiary,
             onPressed: (){
              showDialog(
@@ -98,7 +98,8 @@ class _HomePageState extends State<HomePage> {
              );
             },
             label: Text("Host an event",style: TextStyle(fontWeight:FontWeight.w500),),
-            icon: Icon(Icons.add),),
+            icon: Icon(Icons.add),)
+            :null,
           bottomNavigationBar: BottomNavyBar(
            selectedIndex: _selectedIndex,
            showElevation: true,

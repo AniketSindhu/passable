@@ -48,7 +48,7 @@ class _HostedEventsState extends State<HostedEvents> {
             padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text("Joined Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+              child: Text("Hosted Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
             ),
           ),
           FutureBuilder(
@@ -101,7 +101,7 @@ class _HostedEventsState extends State<HostedEvents> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Align(alignment:Alignment.topLeft,child: Image.network(snapshot.data[index].data['eventBanner'],fit: BoxFit.fitHeight,width: width*0.3,)),
+                                    Align(alignment:Alignment.topLeft,child: Image.network(snapshot.data[index].data['eventBanner'],fit: BoxFit.fitHeight,width: width*0.3,height:height*0.3)),
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.fromLTRB(8.0,16,8,0),

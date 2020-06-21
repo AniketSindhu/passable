@@ -47,7 +47,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
             padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text("Hosted Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+              child: Text("Joined Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
             ),
           ),
           FutureBuilder(

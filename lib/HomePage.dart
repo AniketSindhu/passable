@@ -319,7 +319,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ):
           _selectedIndex==1?
-          HostedEvents():JoinedEvents(uid)
+          HostedEvents(uid):JoinedEvents(uid)
         );
       }
     }

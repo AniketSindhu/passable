@@ -5,11 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'Pass.dart';
 import 'config/config.dart';
-import 'googleSignIn.dart';
-import 'loginui.dart';
 class JoinedEvents extends StatefulWidget {
   String uid;
   JoinedEvents(this.uid);
@@ -50,7 +47,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
             padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text("Joined Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+              child: Text("Hosted Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
             ),
           ),
           FutureBuilder(
@@ -65,7 +62,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
                 return Column(
                   children: [
                     Container(
-                      width: width,
+                      width: width,              
                       height: height/2,
                       child: Center(
                        child: Padding(
@@ -103,7 +100,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Align(alignment:Alignment.topLeft,child: Image.network(snapshot.data[index].data['eventBanner'],fit: BoxFit.fitHeight,)),
+                                    Align(alignment:Alignment.topLeft,child: Image.network(snapshot.data[index].data['eventBanner'],fit: BoxFit.fitHeight,width: width*0.3,height: height*0.3,)),
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.fromLTRB(8.0,16,8,0),

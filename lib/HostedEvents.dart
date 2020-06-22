@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'Pass.dart';
 import 'config/config.dart';
@@ -127,7 +128,9 @@ class _HostedEventsState extends State<HostedEvents> {
                                                       ],
                                                     ),
                                                     FlatButton(
-                                                      onPressed:(){},
+                                                      onPressed:(){
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(1, snapshot.data[index]);}));
+                                                      },
                                                       color: AppColors.tertiary,
                                                       splashColor: AppColors.primary,
                                                       child: Text("Event Details",style: TextStyle(fontWeight: FontWeight.w600),))

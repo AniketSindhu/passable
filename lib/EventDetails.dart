@@ -23,6 +23,14 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   TextEditingController eventCodeController=TextEditingController();
   String writtenCode,passCode;
+  void showPass()async{
+    String passCode;
+    await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').where('eventCode',isEqualTo:widget.post.data['eventCode']).getDocuments()
+    .then((value){
+      passCode=value.documents.elementAt(0).data['passCode'];
+    });
+    Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,widget.post);}));
+  }
   @override
   Widget build(BuildContext context) {
     double width=SizeConfig.getWidth(context);
@@ -137,7 +145,9 @@ class _DetailPageState extends State<DetailPage> {
                                         ).then((value) {
                                           eventCodeController.clear();
                                         }):
-                                      {};
+                                      widget.currentIndex==1?
+                                      {}
+                                      :showPass();
                                     },
                                     child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Edit Event':'Show Pass',style: TextStyle(fontSize:17),),
                                     color: AppColors.tertiary,
@@ -154,6 +164,7 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
               SizedBox(height:15),
+              if(widget.currentIndex==1)
               Align(
                 alignment:Alignment.centerLeft,
                 child: Row(
@@ -178,12 +189,14 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
               SizedBox(height:15),
+              if(widget.currentIndex==1)
               Align(
                 child: Text('Event Dashboard',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,
               ),
-              Divider(color:AppColors.secondary,height: 10,thickness: 2,),
-              SizedBox(height:10),
+              if(widget.currentIndex==1)Divider(color:AppColors.secondary,height: 10,thickness: 2,),
+              if(widget.currentIndex==1)SizedBox(height:10),
+              if(widget.currentIndex==1)             
               Material(
                 elevation: 8.0,
                 borderRadius: BorderRadius.circular(12.0),
@@ -219,7 +232,8 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                 ),
               ),
-              SizedBox(height:10),
+              if(widget.currentIndex==1)SizedBox(height:10),
+              if(widget.currentIndex==1)
               Material(
                 elevation: 8.0,
                 borderRadius: BorderRadius.circular(12.0),
@@ -255,7 +269,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                 ),
               ),
-              SizedBox(height:30),
+              if(widget.currentIndex==1)SizedBox(height:30),
               Align(
                 child: Text('Event Description',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,

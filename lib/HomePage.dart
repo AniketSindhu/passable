@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/JoinedEvents.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/googleSignIn.dart';
@@ -26,8 +27,6 @@ class _HomePageState extends State<HomePage> {
   String name,email;
   String uid;
   int _selectedIndex=0;
-  TextEditingController eventCodeController=TextEditingController();
-  String writtenCode,passCode;
   shared() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid=prefs.getString('userid');
@@ -218,66 +217,7 @@ class _HomePageState extends State<HomePage> {
                             Center(
                               child: GestureDetector(
                                 onTap: (){
-                                  showDialog(
-                                    context:context,
-                                    builder: (context){
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                        scrollable: true,
-                                        backgroundColor:AppColors.secondary,
-                                        title: Center(child: Text("Get Entry Pass",style: TextStyle(color:Colors.white,fontWeight:FontWeight.w700,fontSize:30),)),
-                                        content: Container(
-                                          height: height/5,
-                                         child: Column(
-                                           children: [
-                                             TextField(
-                                               controller: eventCodeController,
-                                               textAlign: TextAlign.center,
-                                                style: TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w500),
-                                                cursorColor: AppColors.primary,
-                                                autofocus: true,
-                                                decoration: InputDecoration(
-                                                  hintText:"Enter event code"
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: RaisedButton(
-                                                    onPressed:() async{
-                                                     final x= await Firestore.instance.collection('users').document(uid).collection('eventJoined').document(snapshot.data[index].data['eventCode']).get();
-                                                      if(snapshot.data[index].data['eventCode']!=eventCodeController.text)
-                                                        print("wrong code entered");
-                                                      else if(snapshot.data[index].data['joined']>=snapshot.data[index].data['maxAttendee'])
-                                                        print('Event Full');
-                                                      else if(x.exists)
-                                                        {
-                                                          print('Already Joined');
-                                                        }
-                                                      else
-                                                      { passCode= randomAlphaNumeric(6);
-                                                        Firestore.instance.collection("events").document(snapshot.data[index].data['eventCode']).collection('guests').document(passCode).setData({'user':uid,'passCode':passCode,'Scanned':false});
-                                                        Firestore.instance.collection('users').document(uid).collection('eventJoined').document(snapshot.data[index].data['eventCode']).setData({'eventCode':snapshot.data[index].data['eventCode'],'passCode':passCode});
-                                                        Firestore.instance.collection('events').document(snapshot.data[index].data['eventCode']).updateData({'joined': snapshot.data[index].data['joined']+1});
-                                                        Navigator.pop(context);
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,snapshot.data[index]);}));
-                                                      }
-                                                    },
-                                                    textColor: AppColors.primary,
-                                                    child: Text("Get Pass",style: TextStyle(fontWeight:FontWeight.w600,fontSize:20),),
-                                                    elevation: 10,
-                                                    color: AppColors.tertiary,
-                                                  ),
-                                                ),
-                                              )
-                                           ],
-                                         )
-                                        ),
-                                      );
-                                    }
-                                  ).then((value) {
-                                    eventCodeController.clear();
-                                  });
+                                  Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(0, snapshot.data[index], uid);}));
                                 },
                                 child: Card(   
                                   shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(12)),),                          

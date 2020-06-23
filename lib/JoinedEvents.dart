@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'Pass.dart';
 import 'config/config.dart';
@@ -57,7 +58,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
               {
                 return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:40)));
               }
-              else if(snapshot.data.length==0)
+              else if(snapshot.data==null)
               {
                 return Column(
                   children: [
@@ -127,16 +128,11 @@ class _JoinedEventsState extends State<JoinedEvents> {
                                                     ),
                                                     FlatButton(
                                                       onPressed:()async{
-                                                        String passCode;
-                                                        await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').where('eventCode',isEqualTo:snapshot.data[index].data['eventCode']).getDocuments()
-                                                        .then((value){
-                                                          passCode=value.documents.elementAt(0).data['passCode'];
-                                                        });
-                                                        Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,snapshot.data[index]);}));
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(2, snapshot.data[index],widget.uid);}));
                                                       },
                                                       color: AppColors.tertiary,
                                                       splashColor: AppColors.primary,
-                                                      child: Text("Show Pass",style: TextStyle(fontWeight: FontWeight.w600),))
+                                                      child: Text("Event Details",style: TextStyle(fontWeight: FontWeight.w600),))
                                                   ],
                                                 ),
                                               ),

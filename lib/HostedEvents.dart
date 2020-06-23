@@ -59,7 +59,7 @@ class _HostedEventsState extends State<HostedEvents> {
               {
                 return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:40)));
               }
-              else if(snapshot.data.length==0)
+              else if(snapshot.data==null)
               {
                 return Column(
                   children: [

@@ -129,7 +129,7 @@ class _HostedEventsState extends State<HostedEvents> {
                                                     ),
                                                     FlatButton(
                                                       onPressed:(){
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(1, snapshot.data[index]);}));
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(1, snapshot.data[index],widget.uid);}));
                                                       },
                                                       color: AppColors.tertiary,
                                                       splashColor: AppColors.primary,

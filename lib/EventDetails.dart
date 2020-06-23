@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:random_string/random_string.dart';
 import 'Pass.dart';
 import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
 
 class DetailPage extends StatefulWidget {
   DocumentSnapshot post;
+  String uid;
   int currentIndex;
-  DetailPage(this.currentIndex,this.post);
+  DetailPage(this.currentIndex,this.post,this.uid);
   @override
   _DetailPageState createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  TextEditingController eventCodeController=TextEditingController();
+  String writtenCode,passCode;
   @override
   Widget build(BuildContext context) {
     double width=SizeConfig.getWidth(context);
@@ -70,7 +75,70 @@ class _DetailPageState extends State<DetailPage> {
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: RaisedButton(
-                                    onPressed:(){},
+                                    onPressed:(){
+                                      widget.currentIndex==0?
+                                       showDialog(
+                                         context:context,
+                                          builder: (context){
+                                           return AlertDialog(
+                                             shape: RoundedRectangleBorder(
+                                               borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                             scrollable: true,
+                                             backgroundColor:AppColors.secondary,
+                                             title: Center(child: Text("Get Entry Pass",style: TextStyle(color:Colors.white,fontWeight:FontWeight.w700,fontSize:30),)),
+                                             content: Container(
+                                               height: height/5,
+                                              child: Column(
+                                                children: [
+                                                  TextField(
+                                                     controller: eventCodeController,
+                                                     textAlign: TextAlign.center,
+                                                     style: TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w500),
+                                                      cursorColor: AppColors.primary,
+                                                     autofocus: true,
+                                                      decoration: InputDecoration(
+                                                       hintText:"Enter event code"
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Center(
+                                                        child: RaisedButton(
+                                                          onPressed:() async{
+                                                           final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
+                                                            if(widget.post.data['eventCode']!=eventCodeController.text)
+                                                              print("wrong code entered");
+                                                            else if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
+                                                              print('Event Full');
+                                                           else if(x.exists)
+                                                              {
+                                                                print('Already Joined');
+                                                             }
+                                                            else
+                                                           { passCode= randomAlphaNumeric(6);
+                                                             Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':widget.uid,'passCode':passCode,'Scanned':false});
+                                                             Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).setData({'eventCode':widget.post.data['eventCode'],'passCode':passCode});
+                                                             Firestore.instance.collection('events').document(widget.post.data['eventCode']).updateData({'joined': widget.post.data['joined']+1});
+                                                             Navigator.pop(context);
+                                                             Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,widget.post);}));
+                                                            }
+                                                         },
+                                                         textColor: AppColors.primary,
+                                                          child: Text("Get Pass",style: TextStyle(fontWeight:FontWeight.w600,fontSize:20),),
+                                                          elevation: 10,
+                                                          color: AppColors.tertiary,
+                                                        ),
+                                                     ),
+                                                    )
+                                                 ],
+                                               )
+                                                  ),
+                                            );
+                                         }
+                                        ).then((value) {
+                                          eventCodeController.clear();
+                                        }):
+                                      {};
+                                    },
                                     child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Edit Event':'Show Pass',style: TextStyle(fontSize:17),),
                                     color: AppColors.tertiary,
                                     splashColor: AppColors.primary,
@@ -88,7 +156,26 @@ class _DetailPageState extends State<DetailPage> {
               SizedBox(height:15),
               Align(
                 alignment:Alignment.centerLeft,
-                child: Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.redAccent,fontWeight: FontWeight.w600,fontSize: 18)),),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.redAccent,fontWeight: FontWeight.w600,fontSize: 18)),),
+                    IconButton(
+                      color: AppColors.primary,
+                      splashColor: AppColors.primary,
+                      highlightColor: AppColors.primary,
+                      icon: Icon(Icons.share,color: Colors.black,),
+                      onPressed:()async{
+                        await FlutterShare.share(
+                          title: 'Get entry pass for ${widget.post.data['eventName']}',
+                          text: 'Enter the code ''${widget.post.data['eventCode']}'' to get an entry pass for the ${widget.post.data['eventName']} happening on ${DateFormat('dd-MM-yyyy AT hh:mm a').format(widget.post.data['eventDateTime'].toDate())}',
+                          linkUrl: 'https://flutter.dev/',
+                          chooserTitle: 'Get entry pass for ${widget.post.data['eventName']}'
+                        );
+                      }
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height:15),
               Align(

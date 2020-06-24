@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:plan_it_on/scanPass.dart';
 import 'package:random_string/random_string.dart';
 import 'Pass.dart';
 import 'config/config.dart';
@@ -129,12 +130,6 @@ class _DetailPageState extends State<DetailPage> {
                                 alignment: Alignment.topLeft,
                                 child: Text("${widget.post.data['eventName']}",style: GoogleFonts.varelaRound(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 22))),
                               ),
-                              Expanded(
-                                child: Align(
-                                  alignment:Alignment.centerLeft,
-                                  child:Text('${widget.post.data['eventAddress']}',style: TextStyle(fontWeight:FontWeight.w500,fontSize: 14),)
-                                ),
-                              ),
                               SizedBox(height:5),
                               Align(
                                 alignment: Alignment.topLeft,
@@ -147,17 +142,31 @@ class _DetailPageState extends State<DetailPage> {
                               Expanded(
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: RaisedButton(
-                                    onPressed:(){
-                                      widget.currentIndex==0?
-                                        getPass(context, height):
-                                      widget.currentIndex==1?
-                                      {}
-                                      :showPass();
-                                    },
-                                    child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Edit Event':'Show Pass',style: TextStyle(fontSize:17),),
-                                    color: AppColors.tertiary,
-                                    splashColor: AppColors.primary,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      if(widget.currentIndex==1)
+                                      RaisedButton(
+                                        onPressed:(){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){return ScanPass(widget.post.data['eventCode']);}));
+                                        },
+                                        color: AppColors.tertiary,
+                                        splashColor: AppColors.primary,
+                                        child:Text('Scan Passes',style: TextStyle(fontSize:16),)
+                                      ),
+                                      RaisedButton(
+                                        onPressed:(){
+                                          widget.currentIndex==0?
+                                            getPass(context, height):
+                                          widget.currentIndex==1?
+                                          {}
+                                          :showPass();
+                                        },
+                                        child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Edit Event':'Show Pass',style: TextStyle(fontSize:16),),
+                                        color: AppColors.tertiary,
+                                        splashColor: AppColors.primary,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               )
@@ -194,7 +203,15 @@ class _DetailPageState extends State<DetailPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 15,),
+              Align(
+                child: Text('Address',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
+                alignment: Alignment.centerLeft,
+              ),
+              Divider(color:AppColors.secondary,height: 10,thickness: 2,),
               SizedBox(height:15),
+              Text('${widget.post.data['eventAddress']}',style: TextStyle(fontSize: 18),),
+              SizedBox(height:20),
               if(widget.currentIndex==1)
               Align(
                 child: Text('Event Dashboard',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),

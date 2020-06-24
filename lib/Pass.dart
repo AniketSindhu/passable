@@ -110,7 +110,7 @@ class _PassState extends State<Pass> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children:<Widget>[
                         SocialMediaButton.facebook(url:'',size:35,color: AppColors.primary,),
-                        SocialMediaButton.instagram(url: '',size:35,color: AppColors.primary,),
+                        SocialMediaButton.instagram(url: 'https://www.instagram.com/passiton.og/',size:35,color: AppColors.primary,),
                         SocialMediaButton.twitter(url: '',size: 35,color: AppColors.primary,),
                       ]
                     ),

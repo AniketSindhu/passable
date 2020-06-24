@@ -10,7 +10,7 @@ import 'Pass.dart';
 import 'config/config.dart';
 
 class HostedEvents extends StatefulWidget {
-  String uid;
+  final String uid;
   HostedEvents(this.uid);
   @override
   _HostedEventsState createState() => _HostedEventsState();

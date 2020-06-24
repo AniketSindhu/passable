@@ -9,7 +9,7 @@ import 'package:plan_it_on/config/size.dart';
 import 'Pass.dart';
 import 'config/config.dart';
 class JoinedEvents extends StatefulWidget {
-  String uid;
+  final String uid;
   JoinedEvents(this.uid);
   @override
   _JoinedEventsState createState() => _JoinedEventsState();

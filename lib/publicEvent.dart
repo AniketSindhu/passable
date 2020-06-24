@@ -14,7 +14,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter_share/flutter_share.dart';
 
 class PublicEvent extends StatefulWidget {
-  String uid;
+  final String uid;
   PublicEvent(this.uid);
   @override
   _PublicEventState createState() => _PublicEventState();
@@ -245,9 +245,11 @@ class _PublicEventState extends State<PublicEvent> {
   }
 }
 class CongoScreen extends StatefulWidget {
-  String eventCode,eventName,eventAddress;
-  DateTime dateTime;
-  File image;
+  final String eventCode;
+  final String eventName;
+  final String eventAddress;
+  final DateTime dateTime;
+  final File image;
   CongoScreen(this.eventName,this.eventCode,this.eventAddress,this.image,this.dateTime,);
   @override
   _CongoScreenState createState() => _CongoScreenState();

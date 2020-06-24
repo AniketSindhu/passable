@@ -9,10 +9,10 @@ import 'config/config.dart';
 import 'package:social_media_buttons/social_media_buttons.dart';
 
 class Pass extends StatefulWidget {
-  @override
-  String passCode;
-  DocumentSnapshot details;
+  final String passCode;
+  final DocumentSnapshot details;
   Pass(this.passCode,this.details);
+  @override
   _PassState createState() => _PassState();
 }
 

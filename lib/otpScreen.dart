@@ -12,7 +12,7 @@ import 'firebaseAdd.dart';
 
 class OTP extends StatefulWidget {
   OTP(this.phone,this.name);
-  String name,phone;
+  final String name,phone;
   @override
   _OTPState createState() => _OTPState();
 }

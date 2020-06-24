@@ -12,9 +12,9 @@ import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
 
 class DetailPage extends StatefulWidget {
-  DocumentSnapshot post;
-  String uid;
-  int currentIndex;
+  final DocumentSnapshot post;
+  final String uid;
+  final int currentIndex;
   DetailPage(this.currentIndex,this.post,this.uid);
   @override
   _DetailPageState createState() => _DetailPageState();
@@ -23,6 +23,7 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   TextEditingController eventCodeController=TextEditingController();
   String writtenCode,passCode;
+  
   void showPass()async{
     String passCode;
     await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').where('eventCode',isEqualTo:widget.post.data['eventCode']).getDocuments()
@@ -31,6 +32,70 @@ class _DetailPageState extends State<DetailPage> {
     });
     Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,widget.post);}));
   }
+
+  void getPass(BuildContext context,double height)async{
+    showDialog(
+      context:context,
+       builder: (context){
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          scrollable: true,
+          backgroundColor:AppColors.secondary,
+          title: Center(child: Text("Get Entry Pass",style: TextStyle(color:Colors.white,fontWeight:FontWeight.w700,fontSize:30),)),
+          content: Container(
+           height: height/5,
+           child: Column(
+             children: [
+               TextField(
+                  controller: eventCodeController,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w500),
+                   cursorColor: AppColors.primary,
+                  autofocus: true,
+                   decoration: InputDecoration(
+                    hintText:"Enter event code"
+                   ),
+                 ),
+                 Expanded(
+                   child: Center(
+                     child: RaisedButton(
+                       onPressed:() async{
+                        final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
+                         if(widget.post.data['eventCode']!=eventCodeController.text)
+                           print("wrong code entered");
+                         else if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
+                           print('Event Full');
+                        else if(x.exists)
+                           {
+                             print('Already Joined');
+                          }
+                         else
+                        { passCode= randomAlphaNumeric(6);
+                         Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':widget.uid,'passCode':passCode,'Scanned':false});
+                         Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).setData({'eventCode':widget.post.data['eventCode'],'passCode':passCode});
+                         Firestore.instance.collection('events').document(widget.post.data['eventCode']).updateData({'joined': widget.post.data['joined']+1});
+                         Navigator.pop(context);
+                         Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,widget.post);}));
+                        }
+                     },
+                     textColor: AppColors.primary,
+                      child: Text("Get Pass",style: TextStyle(fontWeight:FontWeight.w600,fontSize:20),),
+                      elevation: 10,
+                      color: AppColors.tertiary,
+                    ),
+                 ),
+                )
+             ],
+           )
+              ),
+        );
+     }
+    ).then((value) {
+      eventCodeController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double width=SizeConfig.getWidth(context);
@@ -85,66 +150,7 @@ class _DetailPageState extends State<DetailPage> {
                                   child: RaisedButton(
                                     onPressed:(){
                                       widget.currentIndex==0?
-                                       showDialog(
-                                         context:context,
-                                          builder: (context){
-                                           return AlertDialog(
-                                             shape: RoundedRectangleBorder(
-                                               borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                             scrollable: true,
-                                             backgroundColor:AppColors.secondary,
-                                             title: Center(child: Text("Get Entry Pass",style: TextStyle(color:Colors.white,fontWeight:FontWeight.w700,fontSize:30),)),
-                                             content: Container(
-                                               height: height/5,
-                                              child: Column(
-                                                children: [
-                                                  TextField(
-                                                     controller: eventCodeController,
-                                                     textAlign: TextAlign.center,
-                                                     style: TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w500),
-                                                      cursorColor: AppColors.primary,
-                                                     autofocus: true,
-                                                      decoration: InputDecoration(
-                                                       hintText:"Enter event code"
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Center(
-                                                        child: RaisedButton(
-                                                          onPressed:() async{
-                                                           final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
-                                                            if(widget.post.data['eventCode']!=eventCodeController.text)
-                                                              print("wrong code entered");
-                                                            else if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
-                                                              print('Event Full');
-                                                           else if(x.exists)
-                                                              {
-                                                                print('Already Joined');
-                                                             }
-                                                            else
-                                                           { passCode= randomAlphaNumeric(6);
-                                                             Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':widget.uid,'passCode':passCode,'Scanned':false});
-                                                             Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).setData({'eventCode':widget.post.data['eventCode'],'passCode':passCode});
-                                                             Firestore.instance.collection('events').document(widget.post.data['eventCode']).updateData({'joined': widget.post.data['joined']+1});
-                                                             Navigator.pop(context);
-                                                             Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,widget.post);}));
-                                                            }
-                                                         },
-                                                         textColor: AppColors.primary,
-                                                          child: Text("Get Pass",style: TextStyle(fontWeight:FontWeight.w600,fontSize:20),),
-                                                          elevation: 10,
-                                                          color: AppColors.tertiary,
-                                                        ),
-                                                     ),
-                                                    )
-                                                 ],
-                                               )
-                                                  ),
-                                            );
-                                         }
-                                        ).then((value) {
-                                          eventCodeController.clear();
-                                        }):
+                                        getPass(context, height):
                                       widget.currentIndex==1?
                                       {}
                                       :showPass();

@@ -19,11 +19,12 @@ class PassesAlotted extends StatefulWidget {
 }
 
 class _PassesAlottedState extends State<PassesAlotted> {
+  var firestore=Firestore.instance;
   Future getData()async{
     List<String>guests=[];
-    final QuerySnapshot result= await Firestore.instance.collection('events').document(widget.eventCode).collection('guests').getDocuments();
+    final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').getDocuments();
     result.documents.forEach((element)=>guests.add(element.data['user']));
-    final QuerySnapshot joinedGuests=await Firestore.instance.collection('users').where('uid',whereIn:guests).orderBy('name').getDocuments();
+    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",isEqualTo:'lISrBPXzsNZHNdUrw1qNdGnlSd32').getDocuments();
     return joinedGuests.documents;
   }
   @override
@@ -33,7 +34,7 @@ class _PassesAlottedState extends State<PassesAlotted> {
       body: FutureBuilder(
         future: getData(),
         builder: (context,snapshot){
-          if(snapshot.data==null)
+          if(!snapshot.hasData)
             {
               return Center(child: Text('No one joined yet :('),);
             }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:plan_it_on/lists.dart';
 import 'package:plan_it_on/scanPass.dart';
 import 'package:random_string/random_string.dart';
 import 'Pass.dart';
@@ -225,6 +224,9 @@ class _DetailPageState extends State<DetailPage> {
                 borderRadius: BorderRadius.circular(12.0),
                 shadowColor: AppColors.secondary,
                 child:InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){return PassesAlotted(widget.post.data['eventCode']);}));
+                  },
                   child:
                     Padding(
                       padding: const EdgeInsets.all(24.0),

@@ -7,7 +7,7 @@ class FirebaseAdd{
 
   addUser(String name,String email, String phoneNumber,String uid){
     Firestore.instance.collection('users').document(uid)
-    .setData({ 'name': name, 'email': email,'phoneNumber': phoneNumber});
+    .setData({ 'name': name, 'email': email,'phoneNumber': phoneNumber,'uid':uid});
 }
   addEvent (String eventName,String eventCode,String eventDescription,String eventAddress,int maxAttendee,File _image,DateTime dateTime,String uid) async {
     String _uploadedFileURL;

@@ -129,8 +129,8 @@ class _PublicEventState extends State<PublicEvent> {
                   width:0.5,
                   radius: 5,
                   controller: maxAttendeeController,
-                  validator: (value) => value.contains(new RegExp(r'^[0-9]*[1-9]+$|^[1-9]+[0-9]*$'))?null:'*more than 1 attendee required',
-                  hint: "Max number of attendees",
+                  validator: (value) => value.contains(new RegExp(r'^[0-9]*[1-9]+$|^[1-9]+[0-9]*$'))?null:'*more than 1 guest required',
+                  hint: "Max number of guests",
                   icon: Icon(Icons.confirmation_number,color:AppColors.secondary,),
                   onSaved: (input){
                     maxAttendees=int.parse(input);
@@ -203,7 +203,7 @@ class _PublicEventState extends State<PublicEvent> {
                           }
                         ),
                       ),
-                      Text('Upload event banner',style: TextStyle(color:AppColors.primary,fontSize:20,fontWeight: FontWeight.w700),)
+                      Text('Upload event poster (vertical)',style: TextStyle(color:AppColors.primary,fontSize:20,fontWeight: FontWeight.w700),)
                     ],
                   ):
                   Column(

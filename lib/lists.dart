@@ -20,13 +20,12 @@ class PassesAlotted extends StatefulWidget {
 
 class _PassesAlottedState extends State<PassesAlotted> {
   var firestore=Firestore.instance;
-  bool flag=false;
   Future<List<DocumentSnapshot>> users;
   Future getData()async{
     List<String>guests=[];
     final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').getDocuments();
     result.documents.forEach((element)=>guests.add(element.data['user']));
-    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).getDocuments().whenComplete(() => flag=true);
+    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).orderBy('name').getDocuments();
     return joinedGuests.documents;
   }
   @override
@@ -36,24 +35,26 @@ class _PassesAlottedState extends State<PassesAlotted> {
       body: FutureBuilder(
         future: getData(),
         builder: (context,snapshot){
-          if(!snapshot.hasData)
-            {
-              return Center(child: Text('No one joined yet :('),);
-            }
-          else if(snapshot.connectionState==ConnectionState.waiting)
+          if(snapshot.connectionState==ConnectionState.waiting)
             {
               return Center(child: SpinKitChasingDots(color: AppColors.secondary,size: 20,),);
             }
-          else
-          return ListView.builder(
-            itemCount:snapshot.data.length,
-            itemBuilder:(context,index){
-              return ListTile(
-                title:Text("${snapshot.data[index].data['name']}",style: TextStyle(color:Colors.black),),
-                subtitle: Text("${snapshot.data[index].data['phoneNumber']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phoneNumber']}"),
-              );
+          else if(snapshot.hasData)
+           { if(snapshot.data.length==0)
+            {
+              return Center(child: Text('No one joined yet :('),);
             }
-          );
+            else
+            return ListView.builder(
+              itemCount:snapshot.data.length,
+              itemBuilder:(context,index){
+                return ListTile(
+                 title:Text("${snapshot.data[index].data['name']}",),
+                 subtitle: Text("${snapshot.data[index].data['phoneNumber']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phoneNumber']}"),
+                );
+              }
+            );
+           }
         }
       ),
     );

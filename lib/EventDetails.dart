@@ -276,7 +276,7 @@ class _DetailPageState extends State<DetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text('Scanned Passes', style: TextStyle(color: AppColors.primary)),
-                              Text('0', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
+                              Text('${widget.post.data['scanDone']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
                             ],
                           ),
                           Material(

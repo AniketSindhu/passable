@@ -20,11 +20,13 @@ class PassesAlotted extends StatefulWidget {
 
 class _PassesAlottedState extends State<PassesAlotted> {
   var firestore=Firestore.instance;
+  bool flag=false;
+  Future<List<DocumentSnapshot>> users;
   Future getData()async{
     List<String>guests=[];
     final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').getDocuments();
     result.documents.forEach((element)=>guests.add(element.data['user']));
-    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",isEqualTo:'lISrBPXzsNZHNdUrw1qNdGnlSd32').getDocuments();
+    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).getDocuments().whenComplete(() => flag=true);
     return joinedGuests.documents;
   }
   @override

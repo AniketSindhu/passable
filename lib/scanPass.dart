@@ -21,6 +21,10 @@ class _ScanPassState extends State<ScanPass> {
        if(x.data['Scanned']==false)
         {
           Firestore.instance.collection('events').document(widget.eventCode).collection('guests').document(res).updateData({'Scanned':true});
+          Firestore.instance.collection('events').document(widget.eventCode).get().then((value){
+            int counter=value.data['scanDone'];
+            Firestore.instance.collection('events').document(widget.eventCode).updateData({'scanDone':counter+1});
+            });
           showDialog(
             context:contextMain,
             builder: (context){
@@ -147,7 +151,7 @@ class _ScanPassState extends State<ScanPass> {
                 ),
                 Lottie.asset('assets/qrAnim.json'),
                 SizedBox(height:10),
-                Text('1.Hold the phone in verticle position.',style: TextStyle(fontSize:16),),
+                Text('1.Hold the phone in vertical position.',style: TextStyle(fontSize:16),),
                 SizedBox(height:5),
                 Text('2.Center the QR code on the camera frame',style: TextStyle(fontSize:16),),
                 SizedBox(height:5),

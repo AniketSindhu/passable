@@ -184,7 +184,7 @@ class _DetailPageState extends State<DetailPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.redAccent,fontWeight: FontWeight.w600,fontSize: 18)),),
+                    Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 18)),),
                     IconButton(
                       color: AppColors.primary,
                       splashColor: AppColors.primary,
@@ -264,6 +264,9 @@ class _DetailPageState extends State<DetailPage> {
                 borderRadius: BorderRadius.circular(12.0),
                 shadowColor: AppColors.secondary,
                 child:InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){return ScannedList(widget.post.data['eventCode']);}));
+                  },
                   child:
                     Padding(
                       padding: const EdgeInsets.all(24.0),

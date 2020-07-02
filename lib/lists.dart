@@ -4,6 +4,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/scanPass.dart';
 import 'package:random_string/random_string.dart';
@@ -55,6 +56,17 @@ class _PassesAlottedState extends State<PassesAlotted> {
               }
             );
            }
+           else
+           return Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: <Widget>[
+               Lottie.asset('assets/NoOne.json',),
+               SizedBox(height:20),
+               Text('No One joined yet!',style: GoogleFonts.novaRound(textStyle:TextStyle(color: AppColors.secondary,fontSize:22,fontWeight:FontWeight.bold)),),
+               SizedBox(height:20),
+               Text('Tip: Use the Share button on the event detail page so that more people can get passes',style: GoogleFonts.novaRound(textStyle:TextStyle(color: AppColors.secondary,fontSize:20,fontWeight:FontWeight.bold)),),
+            ],
+          );
         }
       ),
     );
@@ -73,7 +85,7 @@ class _ScannedListState extends State<ScannedList> {
   Future<List<DocumentSnapshot>> users;
   Future getData()async{
     List<String>guests=[];
-    final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').where('scanned',isEqualTo:true).getDocuments();
+    final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').where('Scanned',isEqualTo:true).getDocuments();
     result.documents.forEach((element)=>guests.add(element.data['user']));
     final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).orderBy('name').getDocuments();
     return joinedGuests.documents;
@@ -106,7 +118,14 @@ class _ScannedListState extends State<ScannedList> {
             );
            }
            else
-           return Container(child:Text('error'));
+           return Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: <Widget>[
+               Lottie.asset('assets/NoOne.json',),
+               SizedBox(height:20),
+               Text('No Passes scanned yet',style: GoogleFonts.novaRound(textStyle:TextStyle(color: AppColors.secondary,fontSize:22,fontWeight:FontWeight.bold)),)
+            ],
+          );
         }
       ),
     );

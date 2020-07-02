@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:place_picker/place_picker.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 class PublicEvent extends StatefulWidget {
   final String uid;
@@ -50,6 +52,16 @@ class _PublicEventState extends State<PublicEvent> {
       });
     }
   }
+  void showPlacePicker() async {
+    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) =>
+       PlacePicker(
+        FlutterConfig.get('MAP_API_kEY')
+      )
+    ));
+    print(result.formattedAddress);
+  }
+                    
   @override
   Widget build(BuildContext context) {
     double height=SizeConfig.getHeight(context);
@@ -180,10 +192,20 @@ class _PublicEventState extends State<PublicEvent> {
                            }); 
                           }, currentTime: DateTime.now(), locale: LocaleType.en);                          
                         },
-                        child: Text('${DateFormat('dd-MM-yyyy  hh:mm a').format(dateTime)}',style: TextStyle(color:AppColors.primary,fontWeight:FontWeight.w500,fontSize:20),)));
+                        child: Text('${DateFormat('dd-MM-yyyy  hh:mm a').format(dateTime)}',style: TextStyle(color:AppColors.primary,fontWeight:FontWeight.w500,fontSize:20),))
+                      );
                   },
                 ),
                 SizedBox(height:20),
+                Container(
+                  child: FlatButton(
+                    color: Colors.red[300],
+                    onPressed: (){
+                      showPlacePicker();
+                    },
+                    child: Text('Locate Event Address',style: TextStyle(color:Colors.white,fontWeight:FontWeight.w500,fontSize:20),))
+                ),
+                SizedBox(height:13),                
                 FormField(
                   validator:(value)=>_image==null?'*Must upload a photo':null,
                   onSaved:(input){imageDone=true;},

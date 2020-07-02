@@ -279,7 +279,15 @@ class _DetailPageState extends State<DetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text('Scanned Passes', style: TextStyle(color: AppColors.primary)),
-                              Text('${widget.post.data['scanDone']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
+                              StreamBuilder<DocumentSnapshot>(
+                                stream: Firestore.instance.collection('events').document(widget.post.data['eventCode']).snapshots(),
+                                builder: (context, snapshot) {
+                                  if(snapshot.connectionState==ConnectionState.waiting)
+                                    return Text('Loading..', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
+                                  else
+                                  return Text('${snapshot.data['scanDone'].toString()}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
+                                }
+                              )
                             ],
                           ),
                           Material(

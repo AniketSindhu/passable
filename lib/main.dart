@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'HomePage.dart';
 import 'loginui.dart';
@@ -8,6 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool login=prefs.getBool('login');
+  await FlutterConfig.loadEnvVariables();
   runApp(login==null?MyApp1():login?MyApp():MyApp1());
 }
 

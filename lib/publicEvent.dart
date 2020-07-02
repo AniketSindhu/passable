@@ -14,6 +14,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class PublicEvent extends StatefulWidget {
   final String uid;
@@ -25,10 +26,13 @@ class PublicEvent extends StatefulWidget {
 class _PublicEventState extends State<PublicEvent> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
+  Geoflutterfire geo = Geoflutterfire();
   String eventName,eventDescription,eventAddress,eventCode;
   int maxAttendees;
   bool imageDone=false;
   File _image;
+  LocationResult locationSelected;
+  GeoFirePoint myLocation ;
   DateTime dateTime;
   final picker = ImagePicker();
   final nameController=TextEditingController();
@@ -39,7 +43,7 @@ class _PublicEventState extends State<PublicEvent> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       eventCode=randomAlphaNumeric(6);
-      FirebaseAdd().addEvent(eventName, eventCode, eventDescription, eventAddress, maxAttendees,_image,dateTime, widget.uid);
+      FirebaseAdd().addEvent(eventName, eventCode, eventDescription, eventAddress, maxAttendees,_image,dateTime, widget.uid,myLocation);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CongoScreen(eventName,eventCode,eventAddress,_image,dateTime)));
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
@@ -59,7 +63,10 @@ class _PublicEventState extends State<PublicEvent> {
         FlutterConfig.get('MAP_API_kEY')
       )
     ));
-    print(result.formattedAddress);
+    setState(() {
+      locationSelected=result;
+      myLocation = geo.point(latitude: result.latLng.latitude, longitude: result.latLng.longitude);
+    });
   }
                     
   @override
@@ -197,13 +204,34 @@ class _PublicEventState extends State<PublicEvent> {
                   },
                 ),
                 SizedBox(height:20),
-                Container(
-                  child: FlatButton(
-                    color: Colors.red[300],
-                    onPressed: (){
-                      showPlacePicker();
-                    },
-                    child: Text('Locate Event Address',style: TextStyle(color:Colors.white,fontWeight:FontWeight.w500,fontSize:20),))
+                FormField(
+                  validator: (value)=>myLocation==null?"*Date & time are neccessary":null,
+                  builder: (context){
+                  return locationSelected==null?
+                    Container(
+                      child: FlatButton(
+                        color: Colors.red[300],
+                        onPressed: (){
+                          showPlacePicker();
+                        },
+                    child: Text('Locate Event Address',style: TextStyle(color:Colors.white,fontWeight:FontWeight.w500,fontSize:17),))
+                    ):
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('${locationSelected.formattedAddress}',style: TextStyle(color:Colors.cyan,fontWeight:FontWeight.w500,fontSize:16,fontStyle: FontStyle.italic),textAlign:TextAlign.center,),
+                        ),
+                        SizedBox(height:10),
+                        FlatButton(
+                          color: Colors.red[300],
+                          onPressed: (){
+                            showPlacePicker();
+                          },
+                        child: Text('Change Location',style: TextStyle(color:Colors.white,fontWeight:FontWeight.w500,fontSize:17),))                        
+                      ],
+                    );
+                  },
                 ),
                 SizedBox(height:13),                
                 FormField(

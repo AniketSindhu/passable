@@ -64,7 +64,10 @@ class _PassesAlottedState extends State<PassesAlotted> {
                SizedBox(height:20),
                Text('No One joined yet!',style: GoogleFonts.novaRound(textStyle:TextStyle(color: AppColors.secondary,fontSize:22,fontWeight:FontWeight.bold)),),
                SizedBox(height:20),
-               Text('Tip: Use the Share button on the event detail page so that more people can get passes',style: GoogleFonts.novaRound(textStyle:TextStyle(color: AppColors.secondary,fontSize:20,fontWeight:FontWeight.bold)),),
+               Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Text('Tip: Use the Share button on the event detail page so that more people can get passes',style: GoogleFonts.novaRound(textStyle:TextStyle(color: Colors.redAccent,fontSize:17,fontWeight:FontWeight.bold,fontStyle: FontStyle.italic)),textAlign:TextAlign.center,),
+               ),
             ],
           );
         }

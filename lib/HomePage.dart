@@ -16,6 +16,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:flushbar/flushbar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,14 +30,67 @@ class _HomePageState extends State<HomePage> {
   String name,email;
   String uid;
   int _selectedIndex=0;
+  Position location;
+  GeoFirePoint firePoint;
+  List<Placemark> placemark;
+  Flushbar flush;
+  String city;
   shared() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid=prefs.getString('userid');
+  }
+  getLocation()async{
+    var geolocator = Geolocator();
+    await geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+          setState(() {
+            location= position;
+            Geoflutterfire geo = Geoflutterfire();
+            firePoint = geo.point(
+              latitude: location.latitude,
+              longitude: location.longitude);
+          });
+      }).catchError((e){
+        flush=Flushbar<bool>(
+          title: 'Location Not Allowed!',
+          message: "Allow location or select the location of your choice to get events",  
+          icon: Icon(Icons.info,color: Colors.amber),
+          backgroundColor: Colors.redAccent[100],
+          mainButton: FlatButton(
+            onPressed:(){
+              flush.dismiss(true);
+              getLocation();  
+            },
+            child:Text("Allow Location",style: TextStyle(color:Colors.amber),)
+          ),
+        )..show(context);
+      });
+    placemark=await Geolocator().placemarkFromPosition(location);
+    Placemark place = placemark[0];
+    setState(() {
+      city="${place.administrativeArea}";
+    });
+  }
+  Stream getEvents() {
+    Geoflutterfire geo = Geoflutterfire();
+    var collectionReference = Firestore.instance.collection('events').where("eventDateTime",isGreaterThanOrEqualTo: new DateTime.now());
+    String field = 'position';
+    Stream<List<DocumentSnapshot>> stream1;
+    if (geo != null) {
+      stream1 = geo.collection(collectionRef: collectionReference).within(
+          center: firePoint,
+          radius: 125,
+          field: field,
+          strictMode: false);
+    }
+    return stream1;
   }
   @override
   void initState() {
     super.initState();
     shared();
+    getLocation();
   }
   void getData() async{
     if(uid!=null){
@@ -177,8 +233,8 @@ class _HomePageState extends State<HomePage> {
                   child: Text("Upcoming Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
                 ),
               ),
-              FutureBuilder(
-                future: getAllEvents(),
+              StreamBuilder(
+                stream: getEvents(),
                 builder: (BuildContext context1,snapshot){
                   if(snapshot.connectionState==ConnectionState.waiting)
                   {

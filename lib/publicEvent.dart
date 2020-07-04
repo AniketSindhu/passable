@@ -12,9 +12,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:place_picker/place_picker.dart';
+import 'package:place_picker/place_picker.dart' as latlng;
 import 'package:flutter_config/flutter_config.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 
 class PublicEvent extends StatefulWidget {
   final String uid;
@@ -31,7 +32,7 @@ class _PublicEventState extends State<PublicEvent> {
   int maxAttendees;
   bool imageDone=false;
   File _image;
-  LocationResult locationSelected;
+  PickResult mainResult;
   GeoFirePoint myLocation ;
   DateTime dateTime;
   final picker = ImagePicker();
@@ -57,17 +58,24 @@ class _PublicEventState extends State<PublicEvent> {
     }
   }
   void showPlacePicker() async {
-    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) =>
-       PlacePicker(
-        FlutterConfig.get('MAP_API_kEY')
-      )
-    ));
-    setState(() {
-      locationSelected=result;
-      myLocation = geo.point(latitude: result.latLng.latitude, longitude: result.latLng.longitude);
-    });
-  }
+   Navigator.push(
+   context,
+    MaterialPageRoute(
+      builder: (context) => PlacePicker(
+        apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
+        onPlacePicked: (result) { 
+         setState(() {
+          mainResult=result;
+          myLocation = geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
+         }); 
+           Navigator.of(context).pop();
+         },
+         initialPosition:latlng.LatLng(28.7041, 77.1025),
+         useCurrentLocation: true,
+       ),
+     ),
+  );
+}
                     
   @override
   Widget build(BuildContext context) {
@@ -207,7 +215,7 @@ class _PublicEventState extends State<PublicEvent> {
                 FormField(
                   validator: (value)=>myLocation==null?"*Date & time are neccessary":null,
                   builder: (context){
-                  return locationSelected==null?
+                  return mainResult==null?
                     Container(
                       child: FlatButton(
                         color: Colors.red[300],
@@ -220,7 +228,7 @@ class _PublicEventState extends State<PublicEvent> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('${locationSelected.formattedAddress}',style: TextStyle(color:Colors.cyan,fontWeight:FontWeight.w500,fontSize:16,fontStyle: FontStyle.italic),textAlign:TextAlign.center,),
+                          child: Text('${mainResult.formattedAddress}',style: TextStyle(color:Colors.cyan,fontWeight:FontWeight.w500,fontSize:16,fontStyle: FontStyle.italic),textAlign:TextAlign.center,),
                         ),
                         SizedBox(height:10),
                         FlatButton(

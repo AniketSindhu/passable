@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:place_picker/place_picker.dart' as latlng;
 import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/JoinedEvents.dart';
 import 'package:plan_it_on/config/size.dart';
@@ -9,7 +11,6 @@ import 'package:plan_it_on/publicEvent.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HostedEvents.dart';
-import 'Pass.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,8 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   List<Placemark> placemark;
   Flushbar flush;
   String city;
+  Geoflutterfire geo = Geoflutterfire();
   shared() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid=prefs.getString('userid');
@@ -52,6 +56,9 @@ class _HomePageState extends State<HomePage> {
               longitude: location.longitude);
           });
       }).catchError((e){
+        setState(() {
+          firePoint=geo.point(latitude: 28.7041, longitude: 77.1025);
+        });
         flush=Flushbar<bool>(
           title: 'Location Not Allowed!',
           message: "Allow location or select the location of your choice to get events",  
@@ -74,13 +81,13 @@ class _HomePageState extends State<HomePage> {
   }
   Stream getEvents() {
     Geoflutterfire geo = Geoflutterfire();
-    var collectionReference = Firestore.instance.collection('events').where("eventDateTime",isGreaterThanOrEqualTo: new DateTime.now());
+    var collectionReference = Firestore.instance.collection('events');
     String field = 'position';
     Stream<List<DocumentSnapshot>> stream1;
-    if (geo != null) {
+    if (geo != null&&firePoint!=null) {
       stream1 = geo.collection(collectionRef: collectionReference).within(
           center: firePoint,
-          radius: 125,
+          radius: 50,
           field: field,
           strictMode: false);
     }
@@ -226,20 +233,52 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text("Upcoming Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding:const EdgeInsets.only(left:20,bottom:10),
+                    child:Align(
+                      child: GestureDetector(
+                        onTap:()async{
+                          Navigator.push(
+                           context,
+                           MaterialPageRoute(
+                             builder: (context) => PlacePicker(
+                               apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
+                               onPlacePicked: (result) { 
+                                setState(() {
+                                  city="${result.addressComponents.elementAt(2).longName}";
+                                  firePoint=geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
+                                }); 
+                                  Navigator.of(context).pop();
+                                },
+                                initialPosition:latlng.LatLng(28.7041, 77.1025),
+                                useCurrentLocation: true,
+                              ),
+                            ),
+                          );  
+                        },
+                        child: Text("${city==null?'Awaiting Location':city}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color:Colors.redAccent,fontStyle: FontStyle.italic,decoration: TextDecoration.underline),)),
+                    )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("Upcoming Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                    ),
+                  ),
+                ],
               ),
               StreamBuilder(
                 stream: getEvents(),
                 builder: (BuildContext context1,snapshot){
-                  if(snapshot.connectionState==ConnectionState.waiting)
+                  if(snapshot.connectionState==ConnectionState.waiting&&snapshot.data==null)
                   {
                     return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
                   }
+                  else if(snapshot.hasData){
                   if(snapshot.data.length==0){
                   return Column(
                     children: [
@@ -312,6 +351,9 @@ class _HomePageState extends State<HomePage> {
                         );
                     }),
                   );
+              }
+              else
+               return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
               })
             ],
           ):

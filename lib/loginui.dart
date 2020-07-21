@@ -205,10 +205,12 @@ class CustomTextField extends StatelessWidget {
       this.radius,
       this.number,
       this.color,
-      this.width});
+      this.width,
+      this.onChanged});
 
   final TextEditingController controller;
   final FormFieldSetter<String> onSaved;
+  final FormFieldSetter<String> onChanged;
   final int maxLines;
   final int minLines;
   final Icon icon;
@@ -225,6 +227,7 @@ class CustomTextField extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 25, right: 25),
       child: TextFormField(
+        onChanged: onChanged,
         onSaved: onSaved,
         validator: validator,
         maxLines: maxLines,

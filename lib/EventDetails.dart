@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
@@ -63,12 +64,12 @@ class _DetailPageState extends State<DetailPage> {
                        onPressed:() async{
                         final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
                          if(widget.post.data['eventCode']!=eventCodeController.text)
-                           print("wrong code entered");
+                           Fluttertoast.showToast(msg: "Wrong code Entered",backgroundColor: Colors.red,textColor: Colors.white);
                          else if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
-                           print('Event Full');
+                           Fluttertoast.showToast(msg: "Event Full",backgroundColor: Colors.red,textColor: Colors.white);
                         else if(x.exists)
                            {
-                             print('Already Joined');
+                             Fluttertoast.showToast(msg: "Event Already Joined",backgroundColor: Colors.red,textColor: Colors.white);
                           }
                          else
                         { passCode= randomAlphaNumeric(6);

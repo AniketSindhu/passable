@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:plan_it_on/firebaseAdd.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:random_string/random_string.dart';
@@ -16,6 +18,8 @@ import 'package:place_picker/place_picker.dart' as latlng;
 import 'package:flutter_config/flutter_config.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PublicEvent extends StatefulWidget {
   final String uid;
@@ -44,8 +48,7 @@ class _PublicEventState extends State<PublicEvent> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       eventCode=randomAlphaNumeric(6);
-      FirebaseAdd().addEvent(eventName, eventCode, eventDescription, eventAddress, maxAttendees,_image,dateTime, widget.uid,myLocation);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CongoScreen(eventName,eventCode,eventAddress,_image,dateTime)));
+      Navigator.push(context, MaterialPageRoute(builder: (context){return MaxGuests(eventName, eventCode, eventDescription, eventAddress,_image,dateTime, widget.uid,myLocation);}));
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
@@ -147,20 +150,6 @@ class _PublicEventState extends State<PublicEvent> {
                   icon: Icon(Icons.near_me,color:AppColors.secondary,),
                   onSaved: (input){
                     eventAddress=input;
-                  },  
-                ),
-                SizedBox(height:20),
-                CustomTextField(
-                  maxLines:1,
-                  number:true,
-                  width:0.5,
-                  radius: 5,
-                  controller: maxAttendeeController,
-                  validator: (value) => value.contains(new RegExp(r'^[0-9]*[1-9]+$|^[1-9]+[0-9]*$'))?null:'*more than 1 guest required',
-                  hint: "Max number of guests",
-                  icon: Icon(Icons.confirmation_number,color:AppColors.secondary,),
-                  onSaved: (input){
-                    maxAttendees=int.parse(input);
                   },  
                 ),
                 SizedBox(height:20),
@@ -333,7 +322,8 @@ class _CongoScreenState extends State<CongoScreen> {
           child: FloatingActionButton.extended(
             label: Text('Finish'),
             onPressed:(){
-              Navigator.of(context).pop();
+              Navigator.of(context)
+              .popUntil(ModalRoute.withName("/homepage"));
             },
             icon: Icon(Icons.play_arrow),
             tooltip: 'continue',
@@ -413,6 +403,185 @@ class _CongoScreenState extends State<CongoScreen> {
               ),          
             ],
           )
+        ),
+      ),
+    );
+  }
+}
+
+class MaxGuests extends StatefulWidget {
+  final String eventName;
+  final String eventDescription;
+  final String eventAddress;
+  final String eventCode;
+  final File image;
+  final DateTime dateTime;
+  final String uid;
+  final GeoFirePoint myLocation;
+  MaxGuests(this.eventName,this.eventCode,this.eventDescription,this.eventAddress,this.image,this.dateTime,this.uid,this.myLocation);
+  @override
+  _MaxGuestsState createState() => _MaxGuestsState();
+}
+
+class _MaxGuestsState extends State<MaxGuests> {
+  @override
+  int maxAttendees;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseUser _user;
+  Razorpay _razorpay;
+  double amount;
+  int pay;
+  TextEditingController maxAttendeeController=TextEditingController();
+
+  void submit(){
+    FirebaseAdd().addEvent(widget.eventName, widget.eventCode, widget.eventDescription, widget.eventAddress, maxAttendees,widget.image,widget.dateTime, widget.uid,widget.myLocation);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CongoScreen(widget.eventName,widget.eventCode,widget.eventAddress,widget.image,widget.dateTime)));
+  }
+
+  calcAmount(){
+    if(maxAttendees<=50)
+      setState(() {
+        amount=0;
+        pay=0;
+      });
+    else if(maxAttendees>50)
+      setState(() {
+        amount=149;
+        pay=15900;
+      });
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+      msg: "SUCCESS: " + response.paymentId,
+      backgroundColor: Colors.green,
+    );
+    submit();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        msg: "ERROR: " + response.code.toString() + " - " + response.message,
+        );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        backgroundColor: Colors.redAccent,
+        msg: "EXTERNAL_WALLET: " + response.walletName,);
+  }
+
+  getCurrentUser() async {
+    _user = await _firebaseAuth.currentUser();
+   }
+   
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    getCurrentUser();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+  void openCheckout() async {
+    if(maxAttendees<=0)
+      {
+        Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        msg: 'Max guests must be greater than 0');
+      }
+    else if(maxAttendees<=50 && maxAttendees>0)
+      {
+        submit();
+      }
+    else{
+    var options = {
+      'key': FlutterConfig.get('Razor_Pay'),
+      'amount': pay,
+      'name': '${widget.eventName}',
+      'description': 'On ${DateFormat('dd-MM-yyyy AT hh:mm a').format(widget.dateTime)}',
+      'prefill': {'contact': '${_user.displayName}', 'email': '${_user.email==null?'':_user.email}'},
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }}
+}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar:AppBar(title:Text('Create Event')),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Lottie.asset('assets/payment.json'),
+            ),
+            SizedBox(height:10),
+              CustomTextField(
+                maxLines:1,
+                number:true,
+                width:0.5,
+                radius: 5,
+                controller: maxAttendeeController,
+                validator: (value) => value.contains(new RegExp(r'^[0-9]*[1-9]+$|^[1-9]+[0-9]*$'))?null:'*more than 1 guest required',
+                hint: "Max number of guests",
+                icon: Icon(Icons.confirmation_number,color:AppColors.secondary,),
+                onChanged: (value){
+                  maxAttendees=int.parse(value);
+                  calcAmount();
+                },
+                onSaved: (input){
+                  setState(() {
+                    maxAttendees=int.parse(input);
+                    calcAmount();
+                  });                  
+                },  
+              ),
+            SizedBox(height:4),
+            Center(child: Text('*this value will not be able to change after event creation',style:TextStyle(color: Colors.redAccent))),
+            SizedBox(height:15),
+            Center(
+              child: RichText(
+                text:TextSpan(
+                  children:<TextSpan>[
+                    TextSpan(text:'Max Guests<50 = ',style: TextStyle(fontSize:15,fontWeight:FontWeight.w500,color: Colors.black)),
+                    TextSpan(text:'FREE',style: TextStyle(fontSize:17,fontWeight:FontWeight.w700,color: Colors.black)),
+                  ]
+                ) 
+              )
+            ),
+            SizedBox(height:5),
+            Center(
+              child: RichText(
+                text:TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text:'Max Guests>150 = ',style: TextStyle(fontSize:15,fontWeight:FontWeight.w500,color: Colors.black)),
+                    TextSpan(text:'₹199',style: TextStyle(fontSize:15,fontWeight:FontWeight.w600,decoration: TextDecoration.lineThrough,color:Colors.black)),
+                    TextSpan(text:' ₹149',style: TextStyle(fontSize:18,fontWeight:FontWeight.w700,color: Colors.black,)),
+                  ]
+                )
+              ),
+            ),
+            SizedBox(height:25),
+            Align(
+              child: RaisedButton(
+                color: AppColors.primary,
+                child: Text('${amount==0||amount==null?'FREE':'Pay ₹ $amount'}',style:GoogleFonts.montserrat(textStyle:TextStyle(color: Colors.white,fontWeight:FontWeight.w700,fontSize: 20))),
+                onPressed:(){
+                  openCheckout();
+                } 
+              ),
+            )
+          ],
         ),
       ),
     );

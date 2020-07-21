@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:place_picker/place_picker.dart' as latlng;
@@ -39,10 +40,16 @@ class _HomePageState extends State<HomePage> {
   Flushbar flush;
   String city;
   Geoflutterfire geo = Geoflutterfire();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   shared() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid=prefs.getString('userid');
   }
+  Future<FirebaseUser> getCurrentUser() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return user;
+  }
+
   getLocation()async{
     var geolocator = Geolocator();
     await geolocator
@@ -123,41 +130,7 @@ class _HomePageState extends State<HomePage> {
           floatingActionButton: _selectedIndex==0?FloatingActionButton.extended(
             backgroundColor: AppColors.tertiary,
             onPressed: (){
-             showDialog(
-               context: context,
-              builder: (context){
-                return AlertDialog(
-                  backgroundColor: AppColors.secondary,
-                   title: Center(child: Text("What type of event?",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 25,fontWeight: FontWeight.w700)))),
-                   content: Container(
-                     height: height/4,
-                     child:Center(
-                       child: Column(
-                         children: <Widget>[
-                           OutlineButton(
-                             onPressed: (){Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));},
-                             child: Text("Public event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
-                             color: AppColors.tertiary,
-                             borderSide: BorderSide(color:AppColors.tertiary,width:4),
-                             splashColor: AppColors.primary,                      
-                           ),
-                           SizedBox(height: height/60),
-                           Text("OR",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w800)),
-                           SizedBox(height: height/60),
-                           OutlineButton(
-                             onPressed: (){},
-                             child: Text("Private event",style:TextStyle(color:Colors.white,fontSize:25,fontWeight: FontWeight.w500)),
-                             color: AppColors.tertiary,
-                             borderSide: BorderSide(color:AppColors.tertiary,width:4),  
-                             splashColor: AppColors.primary,                               
-                           ) 
-                         ],
-                       ),
-                     )
-                   ),
-                 );
-               }
-             );
+              Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));
             },
             label: Text("Host an event",style: TextStyle(fontWeight:FontWeight.w500),),
             icon: Icon(Icons.add),)

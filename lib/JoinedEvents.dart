@@ -116,23 +116,21 @@ class _JoinedEventsState extends State<JoinedEvents> {
                                               padding: const EdgeInsets.fromLTRB(0,0,0,8.0),
                                               child: Align(
                                                 alignment:Alignment.bottomLeft,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                                   children: [
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text('${DateFormat('hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w600,fontSize: 18),),
-                                                        Text('${DateFormat('EEE, d MMMM yyyy').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w400,fontSize: 14),),
-                                                      ],
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed:()async{
+                                                    Text('${DateFormat('hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w600,fontSize: 18),),
+                                                    Text('${DateFormat('EEE, d MMMM yyyy').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w400,fontSize: 14),),
+                                                    Align(
+                                                      alignment: Alignment.centerRight,
+                                                      child: FlatButton(
+                                                        onPressed:()async{
                                                         Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(2, snapshot.data[index],widget.uid);}));
-                                                      },
-                                                      color: AppColors.tertiary,
-                                                      splashColor: AppColors.primary,
-                                                      child: Text("Event Details",style: TextStyle(fontWeight: FontWeight.w600),))
+                                                        },
+                                                        color: AppColors.tertiary,
+                                                        splashColor: AppColors.primary,
+                                                        child: Text("Event Details",style: TextStyle(fontWeight: FontWeight.w600),)),
+                                                    )
                                                   ],
                                                 ),
                                               ),

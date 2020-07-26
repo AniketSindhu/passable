@@ -77,7 +77,7 @@ packages:
       name: collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.14.12"
+    version: "1.14.13"
   confetti:
     dependency: "direct main"
     description:
@@ -273,12 +273,12 @@ packages:
     source: hosted
     version: "4.1.2+1"
   flutter_svg:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.4"
+    version: "0.18.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -723,6 +723,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  timeago:
+    dependency: "direct main"
+    description:
+      name: timeago
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.26"
   tuple:
     dependency: transitive
     description:
@@ -736,7 +743,7 @@ packages:
       name: typed_data
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "1.2.0"
   universal_html:
     dependency: transitive
     description:
@@ -806,7 +813,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.0"
+    version: "4.2.0"
   zone_local:
     dependency: transitive
     description:
@@ -815,5 +822,5 @@ packages:
     source: hosted
     version: "0.1.2"
 sdks:
-  dart: ">=2.7.2 <3.0.0"
+  dart: ">=2.9.0-14.0.dev <3.0.0"
   flutter: ">=1.17.0 <2.0.0"

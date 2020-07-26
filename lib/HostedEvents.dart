@@ -22,7 +22,7 @@ class _HostedEventsState extends State<HostedEvents> {
     List<String>eventCodes=[];
     final QuerySnapshot result= await firestore.collection('users').document(widget.uid).collection('eventsHosted').getDocuments();
     result.documents.forEach((element)=>eventCodes.add(element.data['eventCode']));
-    final QuerySnapshot hostedEventDetails=await firestore.collection('events').where("eventCode",whereIn:eventCodes).getDocuments();
+    final QuerySnapshot hostedEventDetails=await firestore.collection('events').orderBy('eventDateTime',descending: false).where("eventCode",whereIn:eventCodes).getDocuments();
     return hostedEventDetails.documents;
   }
   @override

@@ -239,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: Text("Upcoming Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                      child: Text("Upcoming Nearby Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
                     ),
                   ),
                 ],

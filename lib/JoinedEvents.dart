@@ -21,7 +21,7 @@ class _JoinedEventsState extends State<JoinedEvents> {
     List<String>eventCodes=[];
     final QuerySnapshot result= await firestore.collection('users').document(widget.uid).collection('eventJoined').getDocuments();
     result.documents.forEach((element)=>eventCodes.add(element.data['eventCode']));
-    final QuerySnapshot joinedEventDetails=await firestore.collection('events').where("eventCode",whereIn:eventCodes).getDocuments();
+    final QuerySnapshot joinedEventDetails=await firestore.collection('events').orderBy('eventDateTime',descending: false).where("eventCode",whereIn:eventCodes).getDocuments();
     return joinedEventDetails.documents;
   }
    @override

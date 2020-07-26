@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'globals.dart' as globals;
 import 'publicEvent.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:random_string/random_string.dart';
 class FirebaseAdd{
 
   addUser(String name,String email, String phoneNumber,String uid){
@@ -36,5 +37,25 @@ class FirebaseAdd{
       'scanDone':0,
       'position':eventLocation.data
     });
+  }
+
+  Future<bool> announce(String eventCode,String description,File image) async{
+    String _uploadedFileURL;
+    if(image!=null){
+    StorageReference firebaseStorageRef =
+      FirebaseStorage.instance.ref().child("$eventCode/${randomAlphaNumeric(8)}");
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(image);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    print(taskSnapshot);
+    await firebaseStorageRef.getDownloadURL().then((fileURL) async {
+        _uploadedFileURL = fileURL;
+      });
+    }
+    Firestore.instance.collection("events").document(eventCode).collection('Announcements').document().setData({
+      'description':description,
+      'media':_uploadedFileURL,
+      'timestamp':DateTime.now()
+    });
+    return true;
   }
 }

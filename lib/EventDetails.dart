@@ -4,6 +4,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:plan_it_on/Announcements.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/lists.dart';
 import 'package:plan_it_on/scanPass.dart';
@@ -159,13 +160,25 @@ class _DetailPageState extends State<DetailPage> {
                                           widget.currentIndex==0?
                                             getPass(context, height):
                                           widget.currentIndex==1?
-                                          {}
+                                          
+                                            Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode'],true);}))
+                                           //make announcements
                                           :showPass();
                                         },
-                                        child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Edit Event':'Show Pass',style: TextStyle(fontSize:16),),
+                                        child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Announcements':'Show Pass',style: TextStyle(fontSize:16),),
                                         color: AppColors.tertiary,
                                         splashColor: AppColors.primary,
                                       ),
+                                      widget.currentIndex==2?
+                                      RaisedButton(
+                                        onPressed:(){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode'],false);}));
+                                           //make announcements
+                                        },
+                                        child: Text("Announcements",style: TextStyle(fontSize:16),),
+                                        color: AppColors.tertiary,
+                                        splashColor: AppColors.primary,
+                                      ):Container()
                                     ],
                                   ),
                                 ),
@@ -185,7 +198,16 @@ class _DetailPageState extends State<DetailPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 18)),),
+                    Expanded(child: Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 18)),)),
+                    IconButton(
+                      icon: Icon(Icons.edit,color: Colors.black),
+                      color: AppColors.primary,
+                      splashColor: AppColors.primary,
+                      highlightColor: AppColors.primary,
+                      onPressed: (){
+                        //edit event
+                      }, 
+                    ),
                     IconButton(
                       color: AppColors.primary,
                       splashColor: AppColors.primary,
@@ -240,7 +262,7 @@ class _DetailPageState extends State<DetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text('Joined Guests', style: TextStyle(color: AppColors.primary)),
-                              Text('${widget.post.data['joined']} / ${widget.post.data['maxAttendee']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
+                              Text('${NumberFormat.compact().format(widget.post.data['joined'])} / ${NumberFormat.compact().format(widget.post.data['maxAttendee'])}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
                             ],
                           ),
                           Material(
@@ -286,7 +308,7 @@ class _DetailPageState extends State<DetailPage> {
                                   if(snapshot.connectionState==ConnectionState.waiting)
                                     return Text('Loading..', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
                                   else
-                                  return Text('${snapshot.data['scanDone'].toString()}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
+                                  return Text('${NumberFormat.compact().format(snapshot.data['scanDone'])}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
                                 }
                               )
                             ],

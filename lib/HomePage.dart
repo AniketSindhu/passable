@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
   }
   Future getAllEvents() async{
     var firestore = Firestore.instance;
-    QuerySnapshot qn= await firestore.collection('events').orderBy('eventDateTime').getDocuments();
+    QuerySnapshot qn= await firestore.collection('events').orderBy('eventDateTime').where('eventLive',isEqualTo:true).getDocuments();
     return qn.documents;
   }
       Widget build(BuildContext context) {

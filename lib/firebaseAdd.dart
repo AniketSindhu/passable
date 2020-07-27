@@ -35,7 +35,8 @@ class FirebaseAdd{
       'eventBanner':_uploadedFileURL,
       'joined':0,
       'scanDone':0,
-      'position':eventLocation.data
+      'position':eventLocation.data,
+      'eventLive':true
     });
   }
 

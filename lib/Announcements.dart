@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'firebaseAdd.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Announcements extends StatefulWidget {
   final bool isOwner;
@@ -90,26 +92,36 @@ Widget announceWidget(Announce announce){
           width: double.infinity,
           margin: EdgeInsets.symmetric(horizontal:15),
           child:ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(6),
             child: Image.network(announce.media,fit:BoxFit.cover,),
           )
         ):Container(),
       Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Text(
+        child: Linkify(
+          options: LinkifyOptions(looseUrl:true),
+          onOpen: (link) async {
+            if (await canLaunch(link.url)) {
+              await launch(link.url);
+            } else {
+              throw 'Could not launch $link';
+              }
+          },
+          text:
           "${announce.description}",
           overflow: TextOverflow.ellipsis,
           maxLines: 30,
           style:GoogleFonts.rubik(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w500,
             color: Colors.black
-          ) 
+          ),
+          linkStyle: TextStyle(color: Colors.blue),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal:8.0),
-        child: Divider(color: AppColors.tertiary,thickness: 1,),
+        child: Divider(color: AppColors.primary,thickness: 1,),
       )
     ],
   );

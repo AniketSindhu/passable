@@ -8,7 +8,7 @@ import 'package:plan_it_on/config/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'clipper.dart';
 import 'config/size.dart';
-import 'firebaseAdd.dart';
+import 'Methods/firebaseAdd.dart';
 
 class OTP extends StatefulWidget {
   OTP(this.phone,this.name);

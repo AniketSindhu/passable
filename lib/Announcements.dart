@@ -7,7 +7,7 @@ import 'Models/AnnouncementClass.dart';
 import 'config/config.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:image_picker/image_picker.dart';
-import 'firebaseAdd.dart';
+import 'Methods/firebaseAdd.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';

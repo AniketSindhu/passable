@@ -6,7 +6,7 @@ import 'package:place_picker/place_picker.dart' as latlng;
 import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/JoinedEvents.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'package:plan_it_on/googleSignIn.dart';
+import 'package:plan_it_on/Methods/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:plan_it_on/publicEvent.dart';
 import 'package:random_string/random_string.dart';

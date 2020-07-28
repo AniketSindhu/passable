@@ -4,7 +4,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:plan_it_on/firebaseAdd.dart';
+import 'package:plan_it_on/Methods/firebaseAdd.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:random_string/random_string.dart';
 import 'clipper.dart';

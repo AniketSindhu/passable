@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'globals.dart' as globals;
-import 'publicEvent.dart';
+import '../globals.dart' as globals;
+import '../publicEvent.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:random_string/random_string.dart';
 class FirebaseAdd{

@@ -23,10 +23,7 @@ class _PassesAlottedState extends State<PassesAlotted> {
   var firestore=Firestore.instance;
   Future<List<DocumentSnapshot>> users;
   Future getData()async{
-    List<String>guests=[];
-    final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').getDocuments();
-    result.documents.forEach((element)=>guests.add(element.data['user']));
-    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).orderBy('name').getDocuments();
+    final QuerySnapshot joinedGuests=await firestore.collection('events').document(widget.eventCode).collection('guests').getDocuments();
     return joinedGuests.documents;
   }
   @override
@@ -51,7 +48,7 @@ class _PassesAlottedState extends State<PassesAlotted> {
               itemBuilder:(context,index){
                 return ListTile(
                  title:Text("${snapshot.data[index].data['name']}",),
-                 subtitle: Text("${snapshot.data[index].data['phoneNumber']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phoneNumber']}"),
+                 subtitle: Text("${snapshot.data[index].data['phone']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phone']}"),
                 );
               }
             );
@@ -87,11 +84,8 @@ class _ScannedListState extends State<ScannedList> {
   var firestore=Firestore.instance;
   Future<List<DocumentSnapshot>> users;
   Future getData()async{
-    List<String>guests=[];
     final QuerySnapshot result= await firestore.collection('events').document(widget.eventCode).collection('guests').where('Scanned',isEqualTo:true).getDocuments();
-    result.documents.forEach((element)=>guests.add(element.data['user']));
-    final QuerySnapshot joinedGuests=await firestore.collection('users').where("uid",whereIn: guests).orderBy('name').getDocuments();
-    return joinedGuests.documents;
+    return result.documents;
   }
   @override
   Widget build(BuildContext context) {
@@ -115,7 +109,7 @@ class _ScannedListState extends State<ScannedList> {
               itemBuilder:(context,index){
                 return ListTile(
                  title:Text("${snapshot.data[index].data['name']}",),
-                 subtitle: Text("${snapshot.data[index].data['phoneNumber']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phoneNumber']}"),
+                 subtitle: Text("${snapshot.data[index].data['phone']==null?snapshot.data[index].data['email']:snapshot.data[index].data['phone']}"),
                 );
               }
             );

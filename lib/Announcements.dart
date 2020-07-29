@@ -120,7 +120,7 @@ Widget announceWidget(Announce announce){
         ),
       ),
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal:8.0),
+        padding: const EdgeInsets.symmetric(horizontal:13.0),
         child: Divider(color: AppColors.primary,thickness: 1,),
       )
     ],
@@ -177,7 +177,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                     hintStyle: GoogleFonts.rubik(color: Colors.purple[200],fontSize: 20,fontWeight:FontWeight.w500),
                     contentPadding: EdgeInsets.symmetric(horizontal:10)
                   ),
-                  style: GoogleFonts.rubik(fontSize:22,fontWeight:FontWeight.w500),
+                  style: GoogleFonts.rubik(fontSize:18,fontWeight:FontWeight.w400),
                 ),
                 SizedBox(height:20),
                 _image==null?Center(

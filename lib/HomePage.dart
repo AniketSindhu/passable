@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
   }
   Stream getEvents() {
     Geoflutterfire geo = Geoflutterfire();
-    var collectionReference = Firestore.instance.collection('events');
+    var collectionReference = Firestore.instance.collection('events').where('eventLive',isEqualTo:true);
     String field = 'position';
     Stream<List<DocumentSnapshot>> stream1;
     if (geo != null&&firePoint!=null) {
@@ -117,11 +117,6 @@ class _HomePageState extends State<HomePage> {
       });       
       });
     }
-  }
-  Future getAllEvents() async{
-    var firestore = Firestore.instance;
-    QuerySnapshot qn= await firestore.collection('events').orderBy('eventDateTime').where('eventLive',isEqualTo:true).getDocuments();
-    return qn.documents;
   }
       Widget build(BuildContext context) {
         double height=SizeConfig.getHeight(context);
@@ -175,8 +170,7 @@ class _HomePageState extends State<HomePage> {
                       text: TextSpan(
                         children:<TextSpan>[
                           TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
-                          TextSpan(text:"it",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
-                          TextSpan(text:"'on",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold)))
+                          TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
                         ]
                       )
                     ),

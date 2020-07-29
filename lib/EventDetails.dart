@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/Announcements.dart';
+import 'package:plan_it_on/Models/user.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/lists.dart';
 import 'package:plan_it_on/scanPass.dart';
@@ -74,7 +75,10 @@ class _DetailPageState extends State<DetailPage> {
                           }
                          else
                         { passCode= randomAlphaNumeric(6);
-                         Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':widget.uid,'passCode':passCode,'Scanned':false});
+                          User user;
+                          final userDoc= await Firestore.instance.collection('users').document(widget.uid).get();
+                         user=User.fromDocument(userDoc);
+                         Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false});
                          Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).setData({'eventCode':widget.post.data['eventCode'],'passCode':passCode});
                          Firestore.instance.collection('events').document(widget.post.data['eventCode']).updateData({'joined': widget.post.data['joined']+1});
                          Navigator.pop(context);
@@ -90,7 +94,7 @@ class _DetailPageState extends State<DetailPage> {
                 )
              ],
            )
-              ),
+          ),
         );
      }
     ).then((value) {

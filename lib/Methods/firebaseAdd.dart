@@ -52,10 +52,12 @@ class FirebaseAdd{
         _uploadedFileURL = fileURL;
       });
     }
-    Firestore.instance.collection("events").document(eventCode).collection('Announcements').document().setData({
+    String id=randomAlphaNumeric(8);
+    Firestore.instance.collection("events").document(eventCode).collection('Announcements').document(id).setData({
       'description':description,
       'media':_uploadedFileURL,
-      'timestamp':DateTime.now()
+      'timestamp':DateTime.now(),
+      'id':id
     });
     return true;
   }

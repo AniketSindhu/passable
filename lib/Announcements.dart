@@ -65,7 +65,7 @@ class _AnnouncementsState extends State<Announcements> {
                 child: ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder:(context,index){
-                    return announceWidget(Announce.fromDocument(snapshot.data.documents[index]));
+                    return announceWidget(Announce.fromDocument(snapshot.data.documents[index]),widget.isOwner,widget.eventCode);
                   } 
                 ),
               );
@@ -76,7 +76,7 @@ class _AnnouncementsState extends State<Announcements> {
   }
 }
                 
-Widget announceWidget(Announce announce){
+Widget announceWidget(Announce announce, bool isOwner,String eventCode){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
@@ -84,7 +84,31 @@ Widget announceWidget(Announce announce){
         padding: const EdgeInsets.all(8.0),
         child: Align(
           alignment: Alignment.centerRight,
-          child: Text(timeago.format(DateTime.parse("${announce.timestamp.toDate()}"),locale:"en"),style: TextStyle(fontWeight:FontWeight.w500,fontSize:18),),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(timeago.format(DateTime.parse("${announce.timestamp.toDate()}"),locale:"en"),style: TextStyle(fontWeight:FontWeight.w500,fontSize:18),),
+              isOwner?SizedBox(width:10):Container(),
+              isOwner?PopupMenuButton(
+                color: AppColors.secondary,
+                icon: Icon(Icons.more_vert),
+                onSelected: (val) async{
+                  if(val==1)
+                    {
+                      await Firestore.instance.collection('events').document(eventCode).collection('Announcements').document(announce.id).delete();
+                    }
+                },
+                itemBuilder:(context){
+                   return <PopupMenuItem>[
+                     PopupMenuItem(
+                       value: 1,
+                       child: Text('Delete announcement',style: TextStyle(fontWeight:FontWeight.w500)),
+                      )
+                  ];
+                },
+              ):Container()
+            ],
+          ),
         ),
       ),
       announce.media!=null?

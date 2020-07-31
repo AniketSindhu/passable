@@ -9,6 +9,7 @@ import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/Methods/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:plan_it_on/publicEvent.dart';
+import 'package:plan_it_on/search.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HostedEvents.dart';
@@ -143,6 +144,11 @@ class _HomePageState extends State<HomePage> {
                 title: Text('Upcoming'),
                 activeColor: Colors.red,
               ),
+               BottomNavyBarItem(
+                   icon: Icon(Icons.search),
+                   title: Text('Hosted'),
+                   activeColor: Colors.orange
+               ),
                BottomNavyBarItem(
                    icon: Icon(Icons.people),
                    title: Text('Hosted'),
@@ -325,7 +331,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ):
           _selectedIndex==1?
-          HostedEvents(uid):JoinedEvents(uid)
+          SearchPage():_selectedIndex==2?HostedEvents(uid):JoinedEvents(uid)
         );
       }
     }

@@ -146,8 +146,8 @@ class _HomePageState extends State<HomePage> {
               ),
                BottomNavyBarItem(
                    icon: Icon(Icons.search),
-                   title: Text('Hosted'),
-                   activeColor: Colors.orange
+                   title: Text('Search'),
+                   activeColor: Colors.orange[800]
                ),
                BottomNavyBarItem(
                    icon: Icon(Icons.people),

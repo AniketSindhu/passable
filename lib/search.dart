@@ -23,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   double width=SizeConfig.getWidth(context);
   onSearch(String val){
     setState(() {
-      q= Firestore.instance.collection('events').where('eventName',isGreaterThanOrEqualTo:val).snapshots();
+      q= Firestore.instance.collection('events').where('eventNameArr',arrayContains:val.toLowerCase()).snapshots();
     });
   }
     return Scaffold(

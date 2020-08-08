@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
@@ -8,6 +9,7 @@ import 'clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:international_phone_input/international_phone_input.dart';
 
 import 'otpScreen.dart';
 
@@ -23,27 +25,49 @@ class _AskLoginState extends State<AskLogin> {
   final controllPhone=TextEditingController(text:'+91');
   final controllName=TextEditingController();
   bool _autoValidate = false;
-  String _phone,_name;
+  String _phone;
+  String _internationalPhoneNumber;
+  String _phoneIsoCode;
 
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>OTP(_phone,_name)));
-      FocusScopeNode currentFocus = FocusScope.of(context);
-      if (!currentFocus.hasPrimaryFocus) {
-        currentFocus.unfocus();
+      if (_internationalPhoneNumber == null) {
+        Fluttertoast.showToast(
+          msg:'Phone number is not valid :( ',
+          backgroundColor: Colors.red,
+          fontSize: 18 
+        );
       }
-     } else {
+      else{
+        _formKey.currentState.save();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>OTP(_internationalPhoneNumber,)));
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      }} 
+      else {
 //    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
       });
     }
   }
+  void _inputChange(
+    String number, String internationlizedPhoneNumber, String isoCode) {
+    setState(() {
+      _phoneIsoCode = isoCode;
+      _phone = number;
+      if (internationlizedPhoneNumber.isNotEmpty) {
+        _internationalPhoneNumber = internationlizedPhoneNumber;
+      }
+    });
+  }
+
       MobileLogin(){
         _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
           return Container(
-            height: MediaQuery.of(context).size.height*0.45,
+            height: MediaQuery.of(context).size.height*0.35,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(50),
@@ -55,7 +79,7 @@ class _AskLoginState extends State<AskLogin> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Text("Login",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 30,fontWeight: FontWeight.w700))),
+                          child: Text("Mobile Login",style: GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize: 30,fontWeight: FontWeight.w700))),
                         )
                       ),
                       SizedBox(height:MediaQuery.of(context).size.height/35),
@@ -64,28 +88,26 @@ class _AskLoginState extends State<AskLogin> {
                         autovalidate: _autoValidate,
                         child: Column(
                           children: <Widget>[
-                            CustomTextField(
-                            onSaved: (input) {
-                              _phone = input;
-                            },
-                            icon: Icon(Icons.phone),
-                            hint: "Phone",
-                            validator:(input)=>input.length<13?"*enter valid phone number":null,
-                            controller: controllPhone,
-                            number: true,
-                            ),
-                            SizedBox(height:10),
-                            CustomTextField(
-                            onSaved: (input) {
-                              _name= input;
-                            },
-                            icon: Icon(Icons.perm_identity),
-                            hint: "Name",
-                            validator:(input)=>input.isEmpty ? "*Required" : null,
-                            maxLines: 1,
-                            controller: controllName,
-                            number: false,
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Theme(
+                                data: ThemeData(primaryColor: AppColors.primary,focusColor: AppColors.primary,),
+                                child: InternationalPhoneInput(
+                                //border: OutlineInputBorder(borderSide: BorderSide(color:AppColors.primary,width:2,style:BorderStyle.solid)),
+                                  initialPhoneNumber: _phone,
+                                  initialSelection: '+91',
+                                  onPhoneNumberChange: _inputChange,
+                                  decoration: InputDecoration(
+                                    hintText: 'phone number',
+                                    fillColor:AppColors.primary,
+                                    focusColor: AppColors.primary,
+                                    enabledBorder:OutlineInputBorder(borderRadius: BorderRadius.circular(25),borderSide: BorderSide(color:AppColors.primary,width:2)),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(25),borderSide: BorderSide(color:AppColors.primary,width: 2.5)),
+                                    hintStyle: TextStyle(fontWeight: FontWeight.w300, fontSize: 18,color: AppColors.primary),
+                                  ),
+                                ),
                               ),
+                            ),
                             ],
                           ),
                         ),
@@ -187,9 +209,6 @@ class _AskLoginState extends State<AskLogin> {
         );
       }
     }
-    
-    void onAuthenticationSuccessful() {
-}
 
 class CustomTextField extends StatelessWidget {
 

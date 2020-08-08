@@ -11,8 +11,8 @@ import 'config/size.dart';
 import 'Methods/firebaseAdd.dart';
 
 class OTP extends StatefulWidget {
-  OTP(this.phone,this.name);
-  final String name,phone;
+  OTP(this.phone);
+  final String phone;
   @override
   _OTPState createState() => _OTPState();
 }
@@ -27,7 +27,7 @@ String actualCode,status;
     phoneSignin();
   }
   void onAuthenticationSuccessful(AuthResult result) async {
-    FirebaseAdd().addUser( widget.name, result.user.email, result.user.phoneNumber, result.user.uid);
+    FirebaseAdd().addUser( 'Aniket', result.user.email, result.user.phoneNumber, result.user.uid);
     SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('login', true);
       prefs.setString('userid', result.user.uid);

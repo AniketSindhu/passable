@@ -164,9 +164,10 @@ class _HomePageState extends State<HomePage> {
           resizeToAvoidBottomPadding: false,
           body: 
           _selectedIndex==0?
-          Column(
-            children: <Widget>[
-              Container(
+          CustomScrollView(
+            slivers:<Widget>[
+            SliverAppBar(
+              title: Container(
                 margin: EdgeInsets.only(left:width/15,top:height/15,right:width/15,bottom:height/30),
                 width: width,
                 child: Row(
@@ -206,129 +207,140 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding:const EdgeInsets.only(left:20,bottom:10),
-                    child:Align(
-                      child: GestureDetector(
-                        onTap:()async{
-                          Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) => PlacePicker(
-                               apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
-                               onPlacePicked: (result) { 
-                                setState(() {
-                                  city="${result.addressComponents.elementAt(2).longName}";
-                                  firePoint=geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
-                                }); 
-                                  Navigator.of(context).pop();
-                                },
-                                initialPosition:latlng.LatLng(28.7041, 77.1025),
-                                useCurrentLocation: true,
+              expandedHeight: 150,
+              pinned: true,
+              floating: true,
+              flexibleSpace:Container(
+                padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
+                height: MediaQuery.of(context).padding.top+150,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding:EdgeInsets.only(left:20,bottom:10),
+                      child:Align(
+                        child: GestureDetector(
+                          onTap:()async{
+                            Navigator.push(
+                             context,
+                             MaterialPageRoute(
+                               builder: (context) => PlacePicker(
+                                 apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
+                                 onPlacePicked: (result) { 
+                                  setState(() {
+                                    city="${result.addressComponents.elementAt(2).longName}";
+                                    firePoint=geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
+                                  }); 
+                                    Navigator.of(context).pop();
+                                  },
+                                  initialPosition:latlng.LatLng(28.7041, 77.1025),
+                                  useCurrentLocation: true,
+                                ),
                               ),
-                            ),
-                          );  
-                        },
-                        child: Text("${city==null?'Awaiting Location':city}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color:Colors.redAccent,fontStyle: FontStyle.italic,decoration: TextDecoration.underline),)),
-                    )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text("Upcoming Nearby Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                            );  
+                          },
+                          child: Text("${city==null?'Awaiting Location':city}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color:Colors.redAccent,fontStyle: FontStyle.italic,decoration: TextDecoration.underline),)),
+                      )
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text("Upcoming Nearby Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              StreamBuilder(
-                stream: getEvents(),
-                builder: (BuildContext context1,snapshot){
-                  if(snapshot.connectionState==ConnectionState.waiting&&snapshot.data==null)
-                  {
-                    return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
-                  }
-                  else if(snapshot.hasData){
-                  if(snapshot.data.length==0){
-                  return Column(
-                    children: [
-                      Container(
-                        width: width,
-                        height: height/2,
-                        child: Center(
-                         child: Padding(
-                             padding: const EdgeInsets.all(16.0),
-                            child: SvgPicture.asset(
-                              'assets/event.svg',
-                              semanticsLabel: 'Event Illustration'
+            ),
+            StreamBuilder(
+              stream: getEvents(),
+              builder: (BuildContext context1,snapshot){
+                if(snapshot.connectionState==ConnectionState.waiting&&snapshot.data==null)
+                {
+                  return SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
+                }
+                else if(snapshot.hasData){
+                if(snapshot.data.length==0){
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width,
+                          height: height/2,
+                          child: Center(
+                           child: Padding(
+                               padding: const EdgeInsets.all(16.0),
+                              child: SvgPicture.asset(
+                                'assets/event.svg',
+                                semanticsLabel: 'Event Illustration'
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height:height/20),
-                      Text("Nothing to show up here :(")
-                    ],
-                  );}
-                  else
-                  return Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) =>
-                        const SizedBox(height: 20.0),  
-                      itemCount: snapshot.data.length,
-                      padding: EdgeInsets.symmetric(horizontal:10),
-                      itemBuilder: (context,index){
-                        return Stack(
-                          children: [
-                            Center(
-                              child: GestureDetector(
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(0, snapshot.data[index], uid);}));
-                                },
-                                child: Card(   
-                                  shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(12)),),                          
-                                  elevation: 20,
-                                  child:ClipRRect(
-                                    borderRadius:BorderRadius.all(Radius.circular(12)),
-                                    child: Image.network(snapshot.data[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
-                                ),
+                        SizedBox(height:height/20),
+                        Text("Nothing to show up here :(")
+                      ],
+                    ),
+                  ),
+                );}
+                else
+                return SliverList(
+                  delegate:SliverChildBuilderDelegate((context,index){
+                    return Padding(
+                      padding: EdgeInsets.only(bottom:20),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(0, snapshot.data[index], uid);}));
+                              },
+                              child: Card(   
+                                shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(12)),),                          
+                                elevation: 20,
+                                child:ClipRRect(
+                                  borderRadius:BorderRadius.all(Radius.circular(12)),
+                                  child: Image.network(snapshot.data[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
                               ),
                             ),
-                            Positioned(
-                              left:10,
-                              top:100,
-                              child: Container(
-                                width: width*0.6,
-                                child: Column(
-                                  children:<Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 2),
-                                      child: Center(child: Text("${snapshot.data[index].data['eventName']}",style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w800,color:AppColors.primary,fontSize: 20),),textAlign: TextAlign.center,)),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Center(child:Text('${DateFormat('dd-MM-yyyy AT hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),)),
-                                    ),   
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("${snapshot.data[index].data['eventAddress']}",textAlign: TextAlign.center,style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 12))),
-                                    )
-                                  ]
-                                ),
-                                color: AppColors.secondary,
+                          ),
+                          Positioned(
+                            left:10,
+                            top:100,
+                            child: Container(
+                              width: width*0.6,
+                              child: Column(
+                                children:<Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 2),
+                                    child: Center(child: Text("${snapshot.data[index].data['eventName']}",style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w800,color:AppColors.primary,fontSize: 20),),textAlign: TextAlign.center,)),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: Center(child:Text('${DateFormat('dd-MM-yyyy AT hh:mm a').format(snapshot.data[index].data['eventDateTime'].toDate())}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),)),
+                                  ),   
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("${snapshot.data[index].data['eventAddress']}",textAlign: TextAlign.center,style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 12))),
+                                  )
+                                ]
                               ),
-                            )
-                          ], 
-                        );
-                    }),
-                  );
-              }
-              else
-               return Expanded(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
-              })
-            ],
+                              color: AppColors.secondary,
+                            ),
+                          )
+                        ], 
+                      ),
+                    );
+                },
+                childCount: snapshot.data.length,
+                )
+              );
+            }
+            else
+             return SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
+            })],
           ):
           _selectedIndex==1?
           SearchPage():_selectedIndex==2?HostedEvents(uid):JoinedEvents(uid)

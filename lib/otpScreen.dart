@@ -1,14 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'clipper.dart';
 import 'config/size.dart';
 import 'Methods/firebaseAdd.dart';
+import 'userInfo.dart';
 
 class OTP extends StatefulWidget {
   OTP(this.phone);
@@ -26,12 +29,20 @@ String actualCode,status;
     super.initState();
     phoneSignin();
   }
-  void onAuthenticationSuccessful(AuthResult result) async {
-    FirebaseAdd().addUser( 'Aniket', result.user.email, result.user.phoneNumber, result.user.uid);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('login', true);
-      prefs.setString('userid', result.user.uid);
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), ModalRoute.withName('login'));
+  void onAuthenticationSuccessful(AuthResult result) async {    
+    String uid = await getCurrentUid();
+    final x = await Firestore.instance.collection('users').document(uid).get();
+    
+    if(x.exists)
+      {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('login', true);
+        prefs.setString('userid', result.user.uid);
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), ModalRoute.withName('login'));
+      }
+    else{
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){return UserInfoPage(widget.phone,null,null,false);}));
+    }  
   }
   void _signInWithPhoneNumber(String smsCode) async {
     AuthCredential auth = PhoneAuthProvider.getCredential(

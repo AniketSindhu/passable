@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/Methods/firebaseAdd.dart';
+import 'package:plan_it_on/userInfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,14 +34,20 @@ Future<String> signInWithGoogle(BuildContext context) async {
   assert(user.uid == currentUser.uid);
   assert(user.email != null);
   assert(user.displayName != null);
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('login', true);
-  prefs.setString('userid', user.uid);
+  final x= await Firestore.instance.collection('users').document(user.uid).get();
+  if(x.exists)
+    {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('login', true);
+      prefs.setString('userid', user.uid);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+    }
+  else{
   name = user.displayName;
   email = user.email;
   phoneNumber=user.phoneNumber;
-  FirebaseAdd().addUser(name, email, phoneNumber, user.uid);
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){return UserInfoPage(phoneNumber,email,name,true);}));
+  }  
   return 'signInWithGoogle succeeded: $user';
 }
 

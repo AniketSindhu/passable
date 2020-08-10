@@ -7,9 +7,9 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:random_string/random_string.dart';
 class FirebaseAdd{
 
-  addUser(String name,String email, String phoneNumber,String uid){
+  addUser(String name,String email, String phoneNumber,String uid,bool isIndia){
     Firestore.instance.collection('users').document(uid)
-    .setData({ 'name': name, 'email': email,'phoneNumber': phoneNumber,'uid':uid,},merge: true);
+    .setData({ 'name': name, 'email': email,'phoneNumber': phoneNumber,'uid':uid,'isIndia':isIndia},merge: true);
 }
   addEvent (String eventName,String eventCode,String eventDescription,String eventAddress,int maxAttendee,File _image,DateTime dateTime,String uid,GeoFirePoint eventLocation) async {
     
@@ -25,15 +25,10 @@ class FirebaseAdd{
     await firebaseStorageRef.getDownloadURL().then((fileURL) async {
         _uploadedFileURL = fileURL;
       });
-
-  List splitName= eventCode.split(' ');
   List eventNameArr=[];
 
-  for(int i=0;i<splitName.length;i++){
-    String name=splitName[i];
-    for(int j=1;j<=name.length;j++)
-     eventNameArr.add(name.substring(0,j).toLowerCase());
-  }
+    for(int j=1;j<=eventName.length;j++)
+     eventNameArr.add(eventName.substring(0,j).toLowerCase());
 
   Firestore.instance.collection('users').document(uid).collection('eventsHosted').document(eventCode)
     .setData({'eventCode':eventCode});

@@ -167,8 +167,9 @@ class _HomePageState extends State<HomePage> {
           CustomScrollView(
             slivers:<Widget>[
             SliverAppBar(
+              backgroundColor: Colors.white,
               title: Container(
-                margin: EdgeInsets.only(left:width/15,top:height/15,right:width/15,bottom:height/30),
+                margin: EdgeInsets.only(left:width/50,top:height/15,right:width/50,bottom:height/30),
                 width: width,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,17 +208,18 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              expandedHeight: 150,
+              collapsedHeight: 65,
+              expandedHeight: 110,
               pinned: true,
               floating: true,
               flexibleSpace:Container(
-                padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
-                height: MediaQuery.of(context).padding.top+150,
+                padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top+70),
+                height: MediaQuery.of(context).padding.top+110,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Padding(
-                      padding:EdgeInsets.only(left:20,bottom:10),
+                      padding:EdgeInsets.only(left:width/18,bottom:10),
                       child:Align(
                         child: GestureDetector(
                           onTap:()async{

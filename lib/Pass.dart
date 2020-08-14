@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'clipper.dart';
+import 'Widgets/clipper.dart';
 import 'config/config.dart';
 import 'package:social_media_buttons/social_media_buttons.dart';
 

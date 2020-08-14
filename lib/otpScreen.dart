@@ -8,7 +8,7 @@ import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'clipper.dart';
+import 'Widgets/clipper.dart';
 import 'config/size.dart';
 import 'Methods/firebaseAdd.dart';
 import 'userInfo.dart';

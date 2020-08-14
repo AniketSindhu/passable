@@ -245,7 +245,7 @@ packages:
     source: hosted
     version: "1.9.0-dev.3"
   flutter_config:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: flutter_config
       url: "https://pub.dartlang.org"

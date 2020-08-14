@@ -7,7 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:plan_it_on/Methods/firebaseAdd.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:random_string/random_string.dart';
-import 'clipper.dart';
+import 'Widgets/clipper.dart';
 import 'config/config.dart';
 import 'config/size.dart';
 import 'package:image_picker/image_picker.dart';

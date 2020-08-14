@@ -10,7 +10,6 @@ import 'package:plan_it_on/config/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Widgets/clipper.dart';
 import 'config/size.dart';
-import 'Methods/firebaseAdd.dart';
 import 'userInfo.dart';
 
 class OTP extends StatefulWidget {

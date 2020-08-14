@@ -7,8 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:plan_it_on/Announcements.dart';
 import 'package:plan_it_on/Models/user.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'package:plan_it_on/lists.dart';
-import 'package:plan_it_on/scanPass.dart';
 import 'package:random_string/random_string.dart';
 import 'Pass.dart';
 import 'config/config.dart';
@@ -150,39 +148,27 @@ class _DetailPageState extends State<DetailPage> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      if(widget.currentIndex==1)
-                                      RaisedButton(
-                                        onPressed:(){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context){return ScanPass(widget.post.data['eventCode']);}));
-                                        },
-                                        color: AppColors.tertiary,
-                                        splashColor: AppColors.primary,
-                                        child:Text('Scan Passes',style: TextStyle(fontSize:16),)
-                                      ),
                                       RaisedButton(
                                         onPressed:(){
                                           widget.currentIndex==0?
-                                            getPass(context, height):
-                                          widget.currentIndex==1?
-                                          
-                                            Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode'],true);}))
-                                           //make announcements
+                                            getPass(context, height)
                                           :showPass();
                                         },
-                                        child: Text(widget.currentIndex==0?'Get Pass':widget.currentIndex==1?'Announcements':'Show Pass',style: TextStyle(fontSize:16),),
+                                        child: Text(widget.currentIndex==0?'Get Pass':'Show Pass',style: TextStyle(fontSize:16),),
                                         color: AppColors.tertiary,
                                         splashColor: AppColors.primary,
                                       ),
-                                      widget.currentIndex==2?
+                                      widget.currentIndex==0?
+                                      Container():
                                       RaisedButton(
                                         onPressed:(){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode'],false);}));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode']);}));
                                            //make announcements
                                         },
                                         child: Text("Announcements",style: TextStyle(fontSize:16),),
                                         color: AppColors.tertiary,
                                         splashColor: AppColors.primary,
-                                      ):Container()
+                                      )
                                     ],
                                   ),
                                 ),
@@ -195,41 +181,7 @@ class _DetailPageState extends State<DetailPage> {
                   ],
                 ),
               ),
-              SizedBox(height:15),
-              if(widget.currentIndex==1)
-              Align(
-                alignment:Alignment.centerLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: Text('Event Code: ${widget.post.data['eventCode']}',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: Colors.red,fontWeight: FontWeight.w600,fontSize: 18)),)),
-                    IconButton(
-                      icon: Icon(Icons.edit,color: Colors.black),
-                      color: AppColors.primary,
-                      splashColor: AppColors.primary,
-                      highlightColor: AppColors.primary,
-                      onPressed: (){
-                        //edit event
-                      }, 
-                    ),
-                    IconButton(
-                      color: AppColors.primary,
-                      splashColor: AppColors.primary,
-                      highlightColor: AppColors.primary,
-                      icon: Icon(Icons.share,color: Colors.black,),
-                      onPressed:()async{
-                        await FlutterShare.share(
-                          title: 'Get entry pass for ${widget.post.data['eventName']}',
-                          text: 'Enter the code ''${widget.post.data['eventCode']}'' to get an entry pass for the ${widget.post.data['eventName']} happening on ${DateFormat('dd-MM-yyyy AT hh:mm a').format(widget.post.data['eventDateTime'].toDate())}',
-                          linkUrl: 'https://flutter.dev/',
-                          chooserTitle: 'Get entry pass for ${widget.post.data['eventName']}'
-                        );
-                      }
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15,),
+              SizedBox(height:30),
               Align(
                 child: Text('Address',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,
@@ -238,101 +190,6 @@ class _DetailPageState extends State<DetailPage> {
               SizedBox(height:15),
               Text('${widget.post.data['eventAddress']}',style: TextStyle(fontSize: 18),),
               SizedBox(height:20),
-              if(widget.currentIndex==1)
-              Align(
-                child: Text('Event Dashboard',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
-                alignment: Alignment.centerLeft,
-              ),
-              if(widget.currentIndex==1)Divider(color:AppColors.secondary,height: 10,thickness: 2,),
-              if(widget.currentIndex==1)SizedBox(height:10),
-              if(widget.currentIndex==1)             
-              Material(
-                elevation: 8.0,
-                borderRadius: BorderRadius.circular(12.0),
-                shadowColor: AppColors.secondary,
-                child:InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){return PassesAlotted(widget.post.data['eventCode']);}));
-                  },
-                  child:
-                    Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Joined Guests', style: TextStyle(color: AppColors.primary)),
-                              Text('${NumberFormat.compact().format(widget.post.data['joined'])} / ${NumberFormat.compact().format(widget.post.data['maxAttendee'])}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0))
-                            ],
-                          ),
-                          Material(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(24.0),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.people, color: Colors.white, size: 30.0),
-                              )
-                            )
-                          )
-                        ]
-                      ),
-                    ),
-                ),
-              ),
-              if(widget.currentIndex==1)SizedBox(height:10),
-              if(widget.currentIndex==1)
-              Material(
-                elevation: 8.0,
-                borderRadius: BorderRadius.circular(12.0),
-                shadowColor: AppColors.secondary,
-                child:InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){return ScannedList(widget.post.data['eventCode']);}));
-                  },
-                  child:
-                    Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Scanned Passes', style: TextStyle(color: AppColors.primary)),
-                              StreamBuilder<DocumentSnapshot>(
-                                stream: Firestore.instance.collection('events').document(widget.post.data['eventCode']).snapshots(),
-                                builder: (context, snapshot) {
-                                  if(snapshot.connectionState==ConnectionState.waiting)
-                                    return Text('Loading..', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
-                                  else
-                                  return Text('${NumberFormat.compact().format(snapshot.data['scanDone'])}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0));
-                                }
-                              )
-                            ],
-                          ),
-                          Material(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(24.0),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.confirmation_number, color: Colors.white, size: 30.0),
-                              )
-                            )
-                          )
-                        ]
-                      ),
-                    ),
-                ),
-              ),
-              if(widget.currentIndex==1)SizedBox(height:30),
               Align(
                 child: Text('Event Description',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,

@@ -8,11 +8,9 @@ import 'package:plan_it_on/JoinedEvents.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/Methods/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
-import 'package:plan_it_on/publicEvent.dart';
 import 'package:plan_it_on/search.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'HostedEvents.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
@@ -123,14 +121,6 @@ class _HomePageState extends State<HomePage> {
         double height=SizeConfig.getHeight(context);
         double width=SizeConfig.getWidth(context);
         return Scaffold(
-          floatingActionButton: _selectedIndex==0?FloatingActionButton.extended(
-            backgroundColor: AppColors.tertiary,
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder:(context)=>PublicEvent(uid)));
-            },
-            label: Text("Host an event",style: TextStyle(fontWeight:FontWeight.w500),),
-            icon: Icon(Icons.add),)
-            :null,
           bottomNavigationBar: BottomNavyBar(
            selectedIndex: _selectedIndex,
            showElevation: true,
@@ -148,11 +138,6 @@ class _HomePageState extends State<HomePage> {
                    icon: Icon(Icons.search),
                    title: Text('Search'),
                    activeColor: Colors.orange[800]
-               ),
-               BottomNavyBarItem(
-                   icon: Icon(Icons.people),
-                   title: Text('Hosted'),
-                   activeColor: Colors.purpleAccent
                ),
                BottomNavyBarItem(
                    icon: Icon(Icons.message),
@@ -345,7 +330,7 @@ class _HomePageState extends State<HomePage> {
             })],
           ):
           _selectedIndex==1?
-          SearchPage():_selectedIndex==2?HostedEvents(uid):JoinedEvents(uid)
+          SearchPage():JoinedEvents(uid)
         );
       }
     }

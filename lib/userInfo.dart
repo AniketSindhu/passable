@@ -120,7 +120,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       String uid = await getCurrentUid();
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool('login', true);
-                      prefs.setString('userid', uid);
                       String name=widget.isGmail?widget.name:_nameController.text;
                       FirebaseAdd().addUser(name, widget.email, widget.phone, uid, isIndia);
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), ModalRoute.withName('login'));

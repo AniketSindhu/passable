@@ -36,7 +36,6 @@ String actualCode,status;
       {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('login', true);
-        prefs.setString('userid', result.user.uid);
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), ModalRoute.withName('login'));
       }
     else{

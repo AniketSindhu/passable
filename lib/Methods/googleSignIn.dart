@@ -39,7 +39,6 @@ Future<String> signInWithGoogle(BuildContext context) async {
     {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('login', true);
-      prefs.setString('userid', user.uid);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
     }
   else{
@@ -51,7 +50,8 @@ Future<String> signInWithGoogle(BuildContext context) async {
   return 'signInWithGoogle succeeded: $user';
 }
 
-void signOutGoogle() async{
+void signOut() async{
   await googleSignIn.signOut();
+  await FirebaseAuth.instance.signOut();
   print("User Sign Out");
 }

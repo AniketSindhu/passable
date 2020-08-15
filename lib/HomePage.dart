@@ -5,6 +5,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:place_picker/place_picker.dart' as latlng;
 import 'package:plan_it_on/EventDetails.dart';
 import 'package:plan_it_on/JoinedEvents.dart';
+import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/Methods/googleSignIn.dart';
 import 'package:plan_it_on/loginui.dart';
@@ -40,9 +41,10 @@ class _HomePageState extends State<HomePage> {
   String city;
   Geoflutterfire geo = Geoflutterfire();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  shared() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    uid=prefs.getString('userid');
+  void getUser() async{
+    uid= await getCurrentUid();
+    setState(() {  
+    });
   }
   Future<FirebaseUser> getCurrentUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    shared();
+    getUser();
     getLocation();
   }
   void getData() async{
@@ -185,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                         {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.clear();
-                          signOutGoogle();
+                          signOut();
                           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AskLogin()),ModalRoute.withName('homepage'));
                         }
                       },
@@ -240,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            StreamBuilder(
+            uid!=null?StreamBuilder(
               stream: getEvents(),
               builder: (BuildContext context1,snapshot){
                 if(snapshot.connectionState==ConnectionState.waiting&&snapshot.data==null)
@@ -327,7 +329,8 @@ class _HomePageState extends State<HomePage> {
             }
             else
              return SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
-            })],
+            }):SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)))
+            ],
           ):
           _selectedIndex==1?
           SearchPage():JoinedEvents(uid)

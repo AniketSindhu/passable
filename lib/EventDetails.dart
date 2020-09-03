@@ -7,10 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:plan_it_on/Announcements.dart';
 import 'package:plan_it_on/Models/user.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:plan_it_on/confirmation.dart';
 import 'package:random_string/random_string.dart';
 import 'Pass.dart';
 import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class DetailPage extends StatefulWidget {
   final DocumentSnapshot post;
@@ -24,18 +26,26 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   TextEditingController eventCodeController=TextEditingController();
   String writtenCode,passCode;
-  
+  int index=0;
   void showPass()async{
     String passCode;
     await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').where('eventCode',isEqualTo:widget.post.data['eventCode']).getDocuments()
     .then((value){
       passCode=value.documents.elementAt(0).data['passCode'];
     });
-    Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,widget.post);}));
+    Navigator.push(context,MaterialPageRoute(builder:(context){return Pass(passCode,widget.post.data['eventCode'],widget.post.data['isOnline']);}));
   }
 
-  void getPass(BuildContext context,double height)async{
-    showDialog(
+void nextPage(BuildContext context,double height)async{
+    final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
+    if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
+       Fluttertoast.showToast(msg: "Event Full",backgroundColor: Colors.red,textColor: Colors.white);
+    else if(x.exists)
+      {
+         Fluttertoast.showToast(msg: "Event Already Joined",backgroundColor: Colors.red,textColor: Colors.white);
+      }
+    else if(widget.post.data['isProtected'])
+      showDialog(
       context:context,
        builder: (context){
         return AlertDialog(
@@ -61,28 +71,12 @@ class _DetailPageState extends State<DetailPage> {
                  Expanded(
                    child: Center(
                      child: RaisedButton(
-                       onPressed:() async{
-                        final x= await Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).get();
-                         if(widget.post.data['eventCode']!=eventCodeController.text)
-                           Fluttertoast.showToast(msg: "Wrong code Entered",backgroundColor: Colors.red,textColor: Colors.white);
-                         else if(widget.post.data['joined']>=widget.post.data['maxAttendee'])
-                           Fluttertoast.showToast(msg: "Event Full",backgroundColor: Colors.red,textColor: Colors.white);
-                        else if(x.exists)
-                           {
-                             Fluttertoast.showToast(msg: "Event Already Joined",backgroundColor: Colors.red,textColor: Colors.white);
-                          }
-                         else
-                        { passCode= randomAlphaNumeric(6);
-                          User user;
-                          final userDoc= await Firestore.instance.collection('users').document(widget.uid).get();
-                         user=User.fromDocument(userDoc);
-                         Firestore.instance.collection("events").document(widget.post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false});
-                         Firestore.instance.collection('users').document(widget.uid).collection('eventJoined').document(widget.post.data['eventCode']).setData({'eventCode':widget.post.data['eventCode'],'passCode':passCode});
-                         Firestore.instance.collection('events').document(widget.post.data['eventCode']).updateData({'joined': widget.post.data['joined']+1});
-                         Navigator.pop(context);
-                         Navigator.push(context, MaterialPageRoute(builder: (context){return Pass(passCode,widget.post);}));
-                        }
-                     },
+                       onPressed:() {
+                          if(widget.post.data['eventCode']==eventCodeController.text)
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyTicket(widget.post)));
+                          else
+                            Fluttertoast.showToast(msg: "Wrong code Entered",backgroundColor: Colors.red,textColor: Colors.white);
+                       },
                      textColor: AppColors.primary,
                       child: Text("Get Pass",style: TextStyle(fontWeight:FontWeight.w600,fontSize:20),),
                       elevation: 10,
@@ -98,6 +92,8 @@ class _DetailPageState extends State<DetailPage> {
     ).then((value) {
       eventCodeController.clear();
     });
+    else 
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyTicket(widget.post)));
   }
 
   @override
@@ -105,12 +101,27 @@ class _DetailPageState extends State<DetailPage> {
     double width=SizeConfig.getWidth(context);
     double height=SizeConfig.getHeight(context);
     return Scaffold(
+      bottomNavigationBar:widget.currentIndex==1?BottomNavigationBar(
+        backgroundColor: AppColors.primary,
+        currentIndex: index,
+        selectedItemColor: AppColors.secondary,
+        unselectedItemColor: Colors.white,
+        onTap: (val){
+          setState(() {
+            index=val;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.info),title: Text('Details')),
+          BottomNavigationBarItem(icon: Icon(Icons.announcement),title: Text('Announcements'))
+        ]
+      ):null,
       appBar: AppBar(
-        title:Text("Event Details",),
+        title:Text(index==0?"Event Details":'Announcements',),
         centerTitle: true,
         backgroundColor: AppColors.primary,
       ),
-      body:SingleChildScrollView(
+      body:index==0?SingleChildScrollView(
         child:Container(
           margin:EdgeInsets.symmetric(horizontal:width/25,vertical: height*0.02),
           child: Column(
@@ -129,9 +140,12 @@ class _DetailPageState extends State<DetailPage> {
                           child:Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Text("${widget.post.data['eventName']}",style: GoogleFonts.varelaRound(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 22))),
+                              Container(
+                                height: 50,
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: AutoSizeText("${widget.post.data['eventName']}",style: GoogleFonts.varelaRound(textStyle:TextStyle(fontWeight:FontWeight.w600,fontSize: 28)),maxLines: 2,),
+                                ),
                               ),
                               SizedBox(height:5),
                               Align(
@@ -142,34 +156,26 @@ class _DetailPageState extends State<DetailPage> {
                                 alignment: Alignment.topLeft,
                                 child: Text('${DateFormat('EEE, d MMMM yyyy').format(widget.post.data['eventDateTime'].toDate())}',style: TextStyle(fontWeight:FontWeight.w400,fontSize: 14),)
                               ),
+                              widget.currentIndex==0?SizedBox(height:10):Container(),
+                              widget.currentIndex==0?Align(
+                                alignment: Alignment.topLeft,
+                                child: Text('${widget.post.data['isPaid']?'₹ ${widget.post.data['ticketPrice']}':'Free'}',style: TextStyle(fontWeight:FontWeight.w600,fontSize: 20),)
+                              ):Container(),
                               Expanded(
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      RaisedButton(
-                                        onPressed:(){
-                                          widget.currentIndex==0?
-                                            getPass(context, height)
-                                          :showPass();
-                                        },
-                                        child: Text(widget.currentIndex==0?'Get Pass':'Show Pass',style: TextStyle(fontSize:16),),
-                                        color: AppColors.tertiary,
-                                        splashColor: AppColors.primary,
-                                      ),
+                                  child: RaisedButton(
+                                    onPressed:(){
                                       widget.currentIndex==0?
-                                      Container():
-                                      RaisedButton(
-                                        onPressed:(){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context){return Announcements(widget.post.data['eventCode']);}));
-                                           //make announcements
-                                        },
-                                        child: Text("Announcements",style: TextStyle(fontSize:16),),
-                                        color: AppColors.tertiary,
-                                        splashColor: AppColors.primary,
-                                      )
-                                    ],
+                                        nextPage(context, height)
+                                        :showPass();
+                                    },
+                                    child: Text(widget.currentIndex==0?'Get Pass':'Show Pass',style: GoogleFonts.alata(fontSize:20),),
+                                    color: AppColors.tertiary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    splashColor: AppColors.primary,
                                   ),
                                 ),
                               )
@@ -181,15 +187,16 @@ class _DetailPageState extends State<DetailPage> {
                   ],
                 ),
               ),
-              SizedBox(height:30),
-              Align(
+             !widget.post.data['isOnline']? SizedBox(height:30):Container(),
+             !widget.post.data['isOnline']? Align(
                 child: Text('Address',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,
-              ),
-              Divider(color:AppColors.secondary,height: 10,thickness: 2,),
-              SizedBox(height:15),
-              Text('${widget.post.data['eventAddress']}',style: TextStyle(fontSize: 18),),
-              SizedBox(height:20),
+              ):Container(),
+             !widget.post.data['isOnline']? Divider(color:AppColors.secondary,height: 10,thickness: 2,):Container(),
+             !widget.post.data['isOnline']? SizedBox(height:15):Container(),
+             !widget.post.data['isOnline']? Text('${widget.post.data['eventAddress']}',style: TextStyle(fontSize: 18),):Container(),
+             !widget.post.data['isOnline']? SizedBox(height:20):Container(),
+             SizedBox(height:30),
               Align(
                 child: Text('Event Description',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
                 alignment: Alignment.centerLeft,
@@ -211,7 +218,7 @@ class _DetailPageState extends State<DetailPage> {
             ],
           ),
         )
-      )
+      ):Announcements(widget.post.data['eventCode'])
     );
   }
 }

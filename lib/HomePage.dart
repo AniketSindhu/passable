@@ -132,11 +132,16 @@ class _HomePageState extends State<HomePage> {
             }),
             items: [
               BottomNavyBarItem(
-                icon: Icon(Icons.apps),
-                title: Text('Upcoming'),
+                icon: Icon(Icons.event),
+                title: Text('Offline Events'),
                 activeColor: Colors.red,
               ),
-               BottomNavyBarItem(
+              BottomNavyBarItem(
+                icon: Icon(Icons.laptop),
+                title: Text('Online Events'),
+                activeColor: Colors.indigo,
+              ),
+              BottomNavyBarItem(
                    icon: Icon(Icons.search),
                    title: Text('Search'),
                    activeColor: Colors.orange[800]
@@ -158,87 +163,95 @@ class _HomePageState extends State<HomePage> {
               title: Container(
                 margin: EdgeInsets.only(left:width/50,top:height/15,right:width/50,bottom:height/30),
                 width: width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children:<TextSpan>[
-                          TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
-                          TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
-                        ]
-                      )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        RichText(
+                          text: TextSpan(
+                            children:<TextSpan>[
+                              TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
+                              TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
+                            ]
+                          )
+                        ),
+                        PopupMenuButton(
+                          icon:Icon(Icons.more_horiz,color: AppColors.primary,size:30),
+                          color: AppColors.primary,
+                          itemBuilder: (context){
+                            var list=List<PopupMenuEntry<Object>>();
+                            list.add(PopupMenuItem(child: Text("Profile",style: TextStyle(color:AppColors.tertiary),)));
+                            list.add(PopupMenuDivider(height: 4,));
+                            list.add(PopupMenuItem(
+                              child: Text("Logout",style: TextStyle(color:AppColors.tertiary),),
+                              value: 2,
+                            ));
+                            return list;
+                          },
+                          onSelected:(value)async{
+                            if(value==2)
+                            {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.clear();
+                              signOut();
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AskLogin()),ModalRoute.withName('homepage'));
+                            }
+                          },
+                        )
+                      ],
                     ),
-                    PopupMenuButton(
-                      icon:Icon(Icons.more_horiz,color: AppColors.primary,size:30),
-                      color: AppColors.primary,
-                      itemBuilder: (context){
-                        var list=List<PopupMenuEntry<Object>>();
-                        list.add(PopupMenuItem(child: Text("Profile",style: TextStyle(color:AppColors.tertiary),)));
-                        list.add(PopupMenuDivider(height: 4,));
-                        list.add(PopupMenuItem(
-                          child: Text("Logout",style: TextStyle(color:AppColors.tertiary),),
-                          value: 2,
-                        ));
-                        return list;
-                      },
-                      onSelected:(value)async{
-                        if(value==2)
-                        {
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          prefs.clear();
-                          signOut();
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AskLogin()),ModalRoute.withName('homepage'));
-                        }
-                      },
-                    )
+                    SizedBox(height:20)
                   ],
                 ),
               ),
-              collapsedHeight: 65,
               expandedHeight: 110,
               pinned: true,
               floating: true,
-              flexibleSpace:Container(
-                padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top+70),
-                height: MediaQuery.of(context).padding.top+110,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding:EdgeInsets.only(left:width/18,bottom:10),
-                      child:Align(
-                        child: GestureDetector(
-                          onTap:()async{
-                            Navigator.push(
-                             context,
-                             MaterialPageRoute(
-                               builder: (context) => PlacePicker(
-                                 apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
-                                 onPlacePicked: (result) { 
-                                  setState(() {
-                                    city="${result.addressComponents.elementAt(2).longName}";
-                                    firePoint=geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
-                                  }); 
-                                    Navigator.of(context).pop();
-                                  },
-                                  initialPosition:latlng.LatLng(28.7041, 77.1025),
-                                  useCurrentLocation: true,
+              flexibleSpace:FlexibleSpaceBar(
+                  background: Container(
+                  padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top+70),
+                  height: MediaQuery.of(context).padding.top+110,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding:EdgeInsets.only(left:width/18,bottom:10),
+                        child:Align(
+                          child: GestureDetector(
+                            onTap:()async{
+                              Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (context) => PlacePicker(
+                                   apiKey:'AIzaSyAJBaI8jdFjekZnRgtJ10DsNVF3RuSfXfc',
+                                   //apiKey: FlutterConfig.get('MAP_API_kEY'),   // Put YOUR OWN KEY here.
+                                   onPlacePicked: (result) { 
+                                    setState(() {
+                                      city="${result.addressComponents.elementAt(2).longName}";
+                                      firePoint=geo.point(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng);
+                                    }); 
+                                      Navigator.of(context).pop();
+                                    },
+                                    initialPosition:latlng.LatLng(28.7041, 77.1025),
+                                    useCurrentLocation: true,
+                                  ),
                                 ),
-                              ),
-                            );  
-                          },
-                          child: Text("${city==null?'Awaiting Location':city}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color:Colors.redAccent,fontStyle: FontStyle.italic,decoration: TextDecoration.underline),)),
-                      )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text("Upcoming Nearby Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                              );  
+                            },
+                            child: Text("${city==null?'Awaiting Location':city}",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color:Colors.redAccent,fontStyle: FontStyle.italic,decoration: TextDecoration.underline),)),
+                        )
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("Upcoming Nearby Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -269,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         SizedBox(height:height/20),
-                        Text("Nothing to show up here :(")
+                        Text("No events nearby you :(")
                       ],
                     ),
                   ),
@@ -333,6 +346,159 @@ class _HomePageState extends State<HomePage> {
             ],
           ):
           _selectedIndex==1?
+          CustomScrollView(
+            slivers:<Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.white,
+              title: Container(
+                margin: EdgeInsets.only(left:width/50,top:height/15,right:width/50,bottom:height/30),
+                width: width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        RichText(
+                          text: TextSpan(
+                            children:<TextSpan>[
+                              TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
+                              TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
+                            ]
+                          )
+                        ),
+                        PopupMenuButton(
+                          icon:Icon(Icons.more_horiz,color: AppColors.primary,size:30),
+                          color: AppColors.primary,
+                          itemBuilder: (context){
+                            var list=List<PopupMenuEntry<Object>>();
+                            list.add(PopupMenuItem(child: Text("Profile",style: TextStyle(color:AppColors.tertiary),)));
+                            list.add(PopupMenuDivider(height: 4,));
+                            list.add(PopupMenuItem(
+                              child: Text("Logout",style: TextStyle(color:AppColors.tertiary),),
+                              value: 2,
+                            ));
+                            return list;
+                          },
+                          onSelected:(value)async{
+                            if(value==2)
+                            {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              prefs.clear();
+                              signOut();
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AskLogin()),ModalRoute.withName('homepage'));
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                    SizedBox(height:20)
+                  ],
+                ),
+              ),
+              expandedHeight: 110,
+              pinned: true,
+              floating: true,
+              flexibleSpace:FlexibleSpaceBar(
+                  background: Container(
+                  padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top+70),
+                  height: MediaQuery.of(context).padding.top+110,
+                  child:Padding(
+                        padding: const EdgeInsets.only(right:16.0,bottom: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("Online Events",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,color:Colors.redAccent),),
+                        ),
+                      ),
+                ),
+              ),
+            ),
+            uid!=null?StreamBuilder(
+              stream: Firestore.instance.collection('OnlineEvents').where('eventLive',isEqualTo:true).snapshots(),
+              builder: (BuildContext context1,snapshot){
+                if(snapshot.connectionState==ConnectionState.waiting&&snapshot.data==null)
+                {
+                  return SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
+                }
+                else if(snapshot.hasData){
+                if(snapshot.data.documents.length==0){
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width,
+                          height: height/2,
+                          child: Center(
+                           child: Padding(
+                               padding: const EdgeInsets.all(16.0),
+                              child: SvgPicture.asset(
+                                'assets/event.svg',
+                                semanticsLabel: 'Event Illustration'
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height:height/20),
+                        Text("No events nearby you :(")
+                      ],
+                    ),
+                  ),
+                );}
+                else
+                return SliverList(
+                  delegate:SliverChildBuilderDelegate((context,index){
+                    return Padding(
+                      padding: EdgeInsets.only(bottom:20),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context){return DetailPage(0, snapshot.data.documents[index], uid);}));
+                              },
+                              child: Card(   
+                                shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(12)),),                          
+                                elevation: 20,
+                                child:ClipRRect(
+                                  borderRadius:BorderRadius.all(Radius.circular(12)),
+                                  child: Image.network(snapshot.data.documents[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left:10,
+                            top:100,
+                            child: Container(
+                              width: width*0.6,
+                              child: Column(
+                                children:<Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 2),
+                                    child: Center(child: Text("${snapshot.data.documents[index].data['eventName']}",style:GoogleFonts.poppins(textStyle:TextStyle(fontWeight:FontWeight.w800,color:AppColors.primary,fontSize: 20),),textAlign: TextAlign.center,)),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: Center(child:Text('${DateFormat('dd-MM-yyyy AT hh:mm a').format(snapshot.data.documents[index].data['eventDateTime'].toDate())}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),)),
+                                  ),
+                                ]
+                              ),
+                              color: AppColors.secondary,
+                            ),
+                          )
+                        ], 
+                      ),
+                    );
+                },
+                childCount: snapshot.data.documents.length,
+                )
+              );
+            }
+            else
+             return SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)));
+            }):SliverFillRemaining(child: Center(child: SpinKitChasingDots(color:AppColors.secondary,size:60)))
+            ],
+          ):_selectedIndex==2?
           SearchPage():JoinedEvents(uid)
         );
       }

@@ -24,13 +24,7 @@ class _AnnouncementsState extends State<Announcements> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:Text("Announcements",),
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-      ),
-      body: StreamBuilder(
+    return StreamBuilder(
         stream: Firestore.instance.collection("events").document(widget.eventCode).collection("Announcements").orderBy('timestamp',descending: true).snapshots(),
         builder:(context,snapshot){
           if(snapshot.connectionState==ConnectionState.waiting){
@@ -63,8 +57,7 @@ class _AnnouncementsState extends State<Announcements> {
               );
           }
         }
-      ),
-    );
+      );
   }
 }
                 

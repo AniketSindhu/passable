@@ -5,6 +5,7 @@ const  database=admin.firestore();
 exports.timerupdate= functions.pubsub.schedule('0 */4 * * *').onRun((context)=>{
     const now= admin.firestore.Timestamp.now();
     const query= database.collection('events').where('eventDateTime','<',now).where('eventLive','==',true);
+    const query1= database.collection('OnlineEvents').where('eventDateTime','<',now).where('eventLive','==',true);
     const task = query.get().then((snapshot)=>
         {       
             snapshot.forEach(doc=>{
@@ -16,6 +17,18 @@ exports.timerupdate= functions.pubsub.schedule('0 */4 * * *').onRun((context)=>{
         console.log(error);
         return error;
     });
+    const task1 = query1.get().then((snapshot)=>
+        {       
+            snapshot.forEach(doc=>{
+                 doc.ref.update({'eventLive':false});
+            });
+            return true;
+        }
+    ).catch((error)=>{
+        console.log(error);
+        return error;
+    });
+    
     console.log("eventDateTime Checked");
     return true;
 });

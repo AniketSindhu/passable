@@ -242,7 +242,7 @@ class _BuyTicketState extends State<BuyTicket> {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.red,
       textColor: Colors.white,
       msg: "ERROR: " + response.code.toString() + " - " + response.message,
     );
@@ -250,7 +250,7 @@ class _BuyTicketState extends State<BuyTicket> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.red,
       textColor: Colors.white,
       msg: "EXTERNAL_WALLET: " + response.walletName,);
   }

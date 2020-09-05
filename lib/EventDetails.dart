@@ -9,6 +9,7 @@ import 'package:plan_it_on/Models/user.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/confirmation.dart';
 import 'package:random_string/random_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Pass.dart';
 import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
@@ -101,7 +102,7 @@ void nextPage(BuildContext context,double height)async{
     double width=SizeConfig.getWidth(context);
     double height=SizeConfig.getHeight(context);
     return Scaffold(
-      bottomNavigationBar:widget.currentIndex==1?BottomNavigationBar(
+      bottomNavigationBar:widget.currentIndex==0?null:BottomNavigationBar(
         backgroundColor: AppColors.primary,
         currentIndex: index,
         selectedItemColor: AppColors.secondary,
@@ -115,7 +116,7 @@ void nextPage(BuildContext context,double height)async{
           BottomNavigationBarItem(icon: Icon(Icons.info),title: Text('Details')),
           BottomNavigationBarItem(icon: Icon(Icons.announcement),title: Text('Announcements'))
         ]
-      ):null,
+      ),
       appBar: AppBar(
         title:Text(index==0?"Event Details":'Announcements',),
         centerTitle: true,
@@ -164,18 +165,37 @@ void nextPage(BuildContext context,double height)async{
                               Expanded(
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: RaisedButton(
-                                    onPressed:(){
-                                      widget.currentIndex==0?
-                                        nextPage(context, height)
-                                        :showPass();
-                                    },
-                                    child: Text(widget.currentIndex==0?'Get Pass':'Show Pass',style: GoogleFonts.alata(fontSize:20),),
-                                    color: AppColors.tertiary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    splashColor: AppColors.primary,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      RaisedButton(
+                                        onPressed:(){
+                                          widget.currentIndex==0?
+                                            nextPage(context, height)
+                                            :showPass();
+                                        },
+                                        child: Text(widget.currentIndex==0?'Get Pass':'Show Pass',style: GoogleFonts.alata(fontSize:20),),
+                                        color: AppColors.tertiary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        splashColor: AppColors.primary,
+                                      ),
+                                      !widget.post.data['isOnline']?Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: AppColors.secondary, width: 1),
+                                          color: AppColors.tertiary,
+                                        ),
+                                        child: IconButton(
+                                          icon: Icon(Icons.location_on),
+                                          iconSize: 25,
+                                          onPressed: (){
+                                            launch('https://www.google.com/maps/search/?api=1&query=${widget.post.data["position"]["geopoint"].latitude.toString()},${widget.post.data["position"]["geopoint"].longitude.toString()}');
+                                          },
+                                          splashColor: AppColors.primary,
+                                        ),
+                                      ):Container()
+                                    ],
                                   ),
                                 ),
                               )

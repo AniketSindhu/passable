@@ -1,16 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/Methods/googleSignIn.dart';
+import 'package:plan_it_on/policy.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Widgets/clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:international_phone_input/international_phone_input.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'otpScreen.dart';
 
 
@@ -28,7 +31,7 @@ class _AskLoginState extends State<AskLogin> {
   String _phone;
   String _internationalPhoneNumber;
   String _phoneIsoCode;
-
+    bool checked=false;
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
       if (_internationalPhoneNumber == null) {
@@ -67,7 +70,7 @@ class _AskLoginState extends State<AskLogin> {
       MobileLogin(){
         _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
           return Container(
-            height: MediaQuery.of(context).size.height*0.35,
+            height: MediaQuery.of(context).size.height*0.4,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(50),
@@ -162,8 +165,18 @@ class _AskLoginState extends State<AskLogin> {
               SizedBox(height:height/10),
               Column(
                 children: <Widget>[
-                  SignInButton(Buttons.GoogleDark, onPressed:()=>signInWithGoogle(context)),
-                  SignInButton(Buttons.Facebook, onPressed:()=>MobileLogin()),
+                  SignInButton(Buttons.GoogleDark,
+                    onPressed:(){
+                      if(checked)
+                        signInWithGoogle(context);
+                      else
+                       Fluttertoast.showToast(
+                         gravity: ToastGravity.TOP,
+                         msg: "Please review privacy policy first",
+                          backgroundColor: Colors.redAccent,
+                          textColor: Colors.white
+                      );
+                    }),
                   SizedBox(height:height/50),
                   OutlineButton(
                     highlightedBorderColor: AppColors.tertiary,
@@ -182,14 +195,48 @@ class _AskLoginState extends State<AskLogin> {
                           Text("Login using Phone No.",style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
-                            fontSize: 22),
+                            fontSize: 20),
                           ),
                         ],
                     )),
-                      onPressed: () { 
-                        MobileLogin();
+                      onPressed: () {
+                        if(checked)
+                          MobileLogin();
+                        else
+                         Fluttertoast.showToast(
+                           gravity: ToastGravity.TOP,
+                           msg: "Please review privacy policy first",
+                            backgroundColor: Colors.redAccent,
+                            textColor: Colors.white
+                        );
                       },
                   ),
+                  SizedBox(height:10),
+                  CheckboxListTile(
+                    title: Text.rich(TextSpan(
+                      children:[
+                        TextSpan(text:"You accept the"),
+                        TextSpan(text:" Privacy policy",recognizer: TapGestureRecognizer()..onTap=(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Policy(index:0)));
+                        },style: TextStyle(color:Colors.blue,fontStyle: FontStyle.italic)),
+                        TextSpan(text:', '),
+                        TextSpan(text:"Terms and conditions",recognizer: TapGestureRecognizer()..onTap=(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Policy(index:1)));
+                        },style: TextStyle(color:Colors.blue,fontStyle: FontStyle.italic)),
+                        TextSpan(text:' & '),
+                        TextSpan(text:"Cancellation policy ",recognizer: TapGestureRecognizer()..onTap=(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Policy(index:2)));
+                        },style: TextStyle(color:Colors.blue,fontStyle: FontStyle.italic)),
+                        TextSpan(text:"of passable.")
+                      ] )),
+                    value: checked,
+                    onChanged: (newValue) { 
+                      setState(() {
+                           checked = newValue; 
+                         }); 
+                       },
+                    controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                  )
                 ],
               ),
               Expanded(

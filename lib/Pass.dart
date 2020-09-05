@@ -140,7 +140,7 @@ class _PassState extends State<Pass> {
                           ),
                         ),
                       ),
-                      passDetails==null?Padding(
+                      passDetails!=null?Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text("Allow ${passDetails.data['ticketCount']} entries",style: TextStyle(color:Colors.red,fontSize: 25,fontWeight: FontWeight.w700),),
                       ):Container(),

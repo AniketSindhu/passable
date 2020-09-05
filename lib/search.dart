@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:plan_it_on/Widgets/eventCard.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -17,15 +18,20 @@ class _SearchPageState extends State<SearchPage> {
   Stream q;
   TextEditingController searchController= TextEditingController();
   final _debouncer = Debouncer(milliseconds: 500);
+  bool isOnline=false;
+  String currentVal;
+  onSearch(String val){
+    setState(() {
+      if(isOnline)
+        q= Firestore.instance.collection('OnlineEvents').where('eventNameArr',arrayContains:val.toLowerCase()).snapshots();
+      else
+        q= Firestore.instance.collection('events').where('eventNameArr',arrayContains:val.toLowerCase()).snapshots();
+    });
+  }
   @override
   Widget build(BuildContext context) {
   double height=SizeConfig.getHeight(context);
   double width=SizeConfig.getWidth(context);
-  onSearch(String val){
-    setState(() {
-      q= Firestore.instance.collection('events').where('eventNameArr',arrayContains:val.toLowerCase()).snapshots();
-    });
-  }
     return Scaffold(
       backgroundColor: Colors.white,
       body:Column(  
@@ -33,61 +39,100 @@ class _SearchPageState extends State<SearchPage> {
           Container(
             margin: EdgeInsets.only(left:width/15,top:height/15,right:width/15,bottom:height/30),
             width: width,
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Search',style: GoogleFonts.lora(fontSize:35,fontWeight:FontWeight.w800,color: AppColors.primary),),
-                Text('any event by name',style: GoogleFonts.lora(fontSize:25,fontWeight:FontWeight.w500,color: AppColors.secondary,fontStyle: FontStyle.italic)),
-              ],
-            )
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Search',style: GoogleFonts.lora(fontSize:35,fontWeight:FontWeight.w800,color: AppColors.primary),),
+                    Text('any event by name',style: GoogleFonts.lora(fontSize:25,fontWeight:FontWeight.w500,color: AppColors.secondary,fontStyle: FontStyle.italic)),
+                  ],
+                ),
+                DropdownButton(
+                  value: currentVal,
+                  hint: Text('Offline Events'),
+                  items:[
+                    DropdownMenuItem(value: 'Offline Events',child: Text('Offline Events'),onTap:(){
+                      setState(() {
+                        isOnline=false;
+                      });
+                    }),
+                    DropdownMenuItem(value: 'Online Events',child: Text('Online Events'),onTap:(){
+                      setState(() {
+                        isOnline=true;
+                      });
+                    })
+                  ],
+                  onChanged:(val){
+                    setState(() {
+                      currentVal=val;
+                    });
+                  })
+          ],
+        )
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal:25.0),
+        child: TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            hintText:'Search',
+            hintStyle: GoogleFonts.lora(fontWeight:FontWeight.w500,color: Colors.black,),
+            helperText: 'type the name of the event you want to search',
+            prefixIcon:Icon(Icons.search,color: Colors.black,),
+            border: OutlineInputBorder(borderRadius:BorderRadius.circular(10),borderSide:BorderSide(color:Colors.black)),
+            enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(10),borderSide:BorderSide(color:Colors.black)),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal:25.0),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText:'Search',
-                hintStyle: GoogleFonts.lora(fontWeight:FontWeight.w500,color: Colors.black,),
-                helperText: 'type the name of the event you want to search',
-                prefixIcon:Icon(Icons.search,color: Colors.black,),
-                border: OutlineInputBorder(borderRadius:BorderRadius.circular(10),borderSide:BorderSide(color:Colors.black)),
-                enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(10),borderSide:BorderSide(color:Colors.black)),
-              ),
-              onChanged: (val){
-                _debouncer.run(() {
-                  onSearch(val);
-                 });
-                print(searchController.text);
-              },
-            ),
-          ),
-          StreamBuilder(
-            stream: q,
-            builder: (context, snapshot) {
-              if(searchController.text==null||searchController.text==''){
-                print('yo');
-                return Container();
-              }
-              else if(snapshot.connectionState==ConnectionState.waiting||!snapshot.hasData)
-                return SpinKitChasingDots(color:AppColors.secondary);
-              else{
-                if(snapshot.data.documents.length==0)
-                  {
-                    print(2);
-                    return Container(
-                      child:Text('no results',style: TextStyle(color: Colors.black,)
-                    ));
-                  }
-                else
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context,index){
-                        print(1);
-                        return eventCard(snapshot.data.documents[index], height, width, 0, context);
-                      }
+          onChanged: (val){
+            _debouncer.run(() {
+              onSearch(val);
+             });
+            print(searchController.text);
+          },
+        ),
+      ),
+      StreamBuilder(
+        stream: q,
+        builder: (context, snapshot) {
+          if(searchController.text==null||searchController.text==''){
+            print('yo');
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Center(
+                  child: Container(
+                    child: SvgPicture.asset(
+                      'assets/search.svg',
+                      width: width*0.6,
+                      semanticsLabel: 'Event Illustration'
                     ),
-                  );
+                  ),
+                ),
+              ),
+            );
+          }
+          else if(snapshot.connectionState==ConnectionState.waiting||!snapshot.hasData)
+            return SpinKitChasingDots(color:AppColors.secondary);
+          else{
+            if(snapshot.data.documents.length==0)
+              {
+                print(2);
+                return Container(
+                  child:Text('no results',style: TextStyle(color: Colors.black,)
+                ));
+              }
+            else
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context,index){
+                    print(1);
+                    return eventCard(snapshot.data.documents[index], height, width, 0, context);
+                  }
+                ),
+              );
               }
             }
           )

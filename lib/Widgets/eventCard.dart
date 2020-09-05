@@ -71,7 +71,7 @@ Widget eventCard(DocumentSnapshot event,double height,double width,int page, Bui
                 width: width,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10.0,10,10,5),
-                  child: Text("${event.data['eventAddress']}",style:TextStyle(color: Colors.white,fontSize:16,fontWeight: FontWeight.w500)),
+                  child: Text(event.data['isOnline']?'Online Event':"${event.data['eventAddress']}",style:TextStyle(color: Colors.white,fontSize:16,fontWeight: FontWeight.w500)),
                 ),
                 color: AppColors.secondary,
               )

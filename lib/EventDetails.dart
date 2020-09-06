@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ import 'Pass.dart';
 import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 
 class DetailPage extends StatefulWidget {
   final DocumentSnapshot post;
@@ -114,7 +116,7 @@ void nextPage(BuildContext context,double height)async{
         },
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.info),title: Text('Details')),
-          BottomNavigationBarItem(icon: Icon(Icons.announcement),title: Text('Announcements'))
+          BottomNavigationBarItem(icon: Icon(FlutterIcons.announcement_mdi),title: Text('Announcements'))
         ]
       ),
       appBar: AppBar(
@@ -235,10 +237,48 @@ void nextPage(BuildContext context,double height)async{
                 ),
                 shouldShowLessText: false,
               ),
+             SizedBox(height:30),
+              Align(
+                child: Text('Host info',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
+                alignment: Alignment.centerLeft,
+              ),
+              Divider(color:AppColors.secondary,height: 10,thickness: 2,),
+              SizedBox(height:15),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Name: ${widget.post.data['hostName']}',
+                  style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+                ),
+              ),
+              SizedBox(height:6),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Email: ${widget.post.data['hostEmail']}',
+                  style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    'Phone:${widget.post.data['hostPhoneNumber']}',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.content_copy),
+                    onPressed:(){
+                        ClipboardManager.copyToClipBoard("${widget.post.data['hostPhoneNumber']}").then((result) {
+                          Fluttertoast.showToast(msg: 'Copied to clipboard');
+                        });
+
+                    })
+                ],
+              ),
             ],
           ),
         )
-      ):Announcements(widget.post.data['eventCode'])
+      ):Announcements(widget.post.data['eventCode'],widget.post.data['isOnline'])
     );
   }
 }

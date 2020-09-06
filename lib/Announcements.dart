@@ -15,7 +15,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Announcements extends StatefulWidget {
   final String eventCode;
-  Announcements(this.eventCode);
+  final bool isOnline;
+  Announcements(this.eventCode,this.isOnline);
   @override
   _AnnouncementsState createState() => _AnnouncementsState();
 }
@@ -25,7 +26,7 @@ class _AnnouncementsState extends State<Announcements> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: Firestore.instance.collection("events").document(widget.eventCode).collection("Announcements").orderBy('timestamp',descending: true).snapshots(),
+        stream: Firestore.instance.collection(widget.isOnline?"OnlineEvents":"events").document(widget.eventCode).collection("Announcements").orderBy('timestamp',descending: true).snapshots(),
         builder:(context,snapshot){
           if(snapshot.connectionState==ConnectionState.waiting){
             return Center(

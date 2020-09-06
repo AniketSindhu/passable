@@ -72,6 +72,7 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
         ),
       ),
       body:TabBarView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children:[Column(
           children: [

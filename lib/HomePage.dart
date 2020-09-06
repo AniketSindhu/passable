@@ -12,6 +12,7 @@ import 'package:plan_it_on/loginui.dart';
 import 'package:plan_it_on/search.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,6 +24,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:fancy_drawer/fancy_drawer.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -253,6 +255,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: Container(
                 width: width*0.5,
                 child: ListTile(
+                  onTap: (){
+                    launch('https://docs.google.com/forms/d/e/1FAIpQLSdH83WOnp3bSOuw9BoNXJ0cjT-ikkCjwBUyWttqmDyQvJC2Vw/viewform?usp=sf_link');
+                  },
                  title:Text(
                    "Work with us",
                    style: TextStyle(
@@ -314,7 +319,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                      activeColor: Colors.orange[800]
                  ),
                  BottomNavyBarItem(
-                     icon: Icon(Icons.message),
+                     icon: Icon(FlutterIcons.ticket_alt_faw5s),
                      title: Text('Joined'),
                      activeColor: Colors.pink
                 ),

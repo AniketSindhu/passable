@@ -32,3 +32,19 @@ exports.timerupdate= functions.pubsub.schedule('0 */4 * * *').onRun((context)=>{
     console.log("eventDateTime Checked");
     return true;
 });
+
+exports.sendNotificationToTopic = functions.firestore.document('Announcements/{a_id}').onWrite(async (event) => {
+    //let docID = event.after.id;
+    let title = 'New announcement from '+event.after.get('eventName');
+    let content = event.after.get('description');
+    var message = {
+        notification: {
+            title: title,
+            body: content,
+        },
+        topic: event.after.get('token'),
+    };
+
+    let response = await admin.messaging(com.aniket.passable).send(message);
+    console.log(response);
+});

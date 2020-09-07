@@ -45,17 +45,8 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title:Padding(
-          padding: const EdgeInsets.only(left:10,top:10),
-          child: RichText(
-             text: TextSpan(
-               children:<TextSpan>[
-                TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
-                TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
-              ]
-            )
-          ),
-        ),
+        title:Image.asset('assets/logo.png',height: 50,),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           onTap: (val){

@@ -143,14 +143,14 @@ class _AskLoginState extends State<AskLogin> {
           body: Column(
             children:<Widget>[
               SizedBox(height:height/20,),
+              Expanded(child: Image.asset('assets/logo.png',height: 70,)),
               Expanded(
                 child: Center(
                   child:RichText(
                     text: TextSpan(
                       children:<TextSpan>[
-                        TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold))),
-                        TextSpan(text:"it",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:45,fontWeight: FontWeight.bold))),
-                        TextSpan(text:"'on",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold)))
+                        TextSpan(text:"Pass",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold))),
+                        TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:45,fontWeight: FontWeight.bold))),
                       ] 
                     )
                   ),

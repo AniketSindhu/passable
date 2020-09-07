@@ -15,7 +15,7 @@ import 'Pass.dart';
 import 'config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
+import 'package:clipboard/clipboard.dart';
 
 class DetailPage extends StatefulWidget {
   final DocumentSnapshot post;
@@ -268,11 +268,9 @@ void nextPage(BuildContext context,double height)async{
                   IconButton(
                     icon: Icon(Icons.content_copy),
                     onPressed:(){
-                        ClipboardManager.copyToClipBoard("${widget.post.data['hostPhoneNumber']}").then((result) {
-                          Fluttertoast.showToast(msg: 'Copied to clipboard');
-                        });
-
-                    })
+                       FlutterClipboard.copy('${widget.post.data['hostPhoneNumber']}').then(( value ) => Fluttertoast.showToast(msg: 'copied to clipboard'));
+                    }
+                  )
                 ],
               ),
             ],

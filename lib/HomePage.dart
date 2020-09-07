@@ -323,6 +323,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                      title: Text('Joined'),
                      activeColor: Colors.pink
                 ),
+                
               ],
             ),
             resizeToAvoidBottomPadding: false,
@@ -331,6 +332,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             CustomScrollView(
               slivers:<Widget>[
               SliverAppBar(
+                backgroundColor: Colors.white,
                 leading: IconButton(
                   icon: Icon(
                     Icons.menu,
@@ -340,7 +342,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     _controller.toggle();
                   },
                 ),
-                backgroundColor: Colors.white,
                 title: Container(
                   margin: EdgeInsets.only(left:width/50,top:height/15,right:width/50,bottom:height/30),
                   width: width,
@@ -350,14 +351,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                              children:<TextSpan>[
-                                TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
-                                TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
-                              ]
-                            )
-                          ),
+                          Expanded(child: Image.asset('assets/logo.png',height: 50,)),
                           IconButton(
                             icon:Icon(Icons.tune,color: AppColors.primary,size:25),
                             color: AppColors.primary,
@@ -420,6 +414,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 floating: true,
                 flexibleSpace:FlexibleSpaceBar(
                     background: Container(
+                    color: Colors.white,
                     padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top+70),
                     height: MediaQuery.of(context).padding.top+110,
                     child: Row(
@@ -581,14 +576,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                              children:<TextSpan>[
-                                TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
-                                TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.secondary,fontSize:35,fontWeight: FontWeight.bold))),
-                              ]
-                            )
-                          ),
+                          Expanded(child: Image.asset('assets/logo.png',height: 50,)),
                           IconButton(
                             icon:Icon(Icons.tune,color: AppColors.primary,size:25),
                             color: AppColors.primary,

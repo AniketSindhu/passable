@@ -45,6 +45,6 @@ exports.sendNotificationToTopic = functions.firestore.document('Announcements/{a
         topic: event.after.get('token'),
     };
 
-    let response = await admin.messaging(com.aniket.passable).send(message);
+    let response = await admin.messaging().send(message);
     console.log(response);
 });

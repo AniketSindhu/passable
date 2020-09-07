@@ -90,10 +90,14 @@ class _PassState extends State<Pass> {
                             RichText(
                               text: TextSpan(
                                 children:<TextSpan>[
-                                  TextSpan(text:"Pass'",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
+                                  TextSpan(text:"Pass",style:GoogleFonts.lora(textStyle:TextStyle(color: AppColors.primary,fontSize:35,fontWeight: FontWeight.bold))),
                                   TextSpan(text:"able",style:GoogleFonts.lora(textStyle:TextStyle(color: Colors.pink[600],fontSize:35,fontWeight: FontWeight.bold))),
                                 ]
                               )
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal:8.0),
+                              child: Image.asset('assets/logo.png',height: 80,),
                             ),
                           ],
                         ),

@@ -85,13 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+1"
-  clipboard_manager:
+  clipboard:
     dependency: "direct main"
     description:
-      name: clipboard_manager
+      name: clipboard
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.4"
+    version: "0.1.2+8"
   cloud_firestore:
     dependency: "direct main"
     description:

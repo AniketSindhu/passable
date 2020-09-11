@@ -15,43 +15,58 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pass-it-on',
-      theme: ThemeData(
-        primaryColor: AppColors.primary,
-        accentColor: AppColors.secondary,
-        brightness: Brightness.light,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return Wiredash(
+      navigatorKey: _navigatorKey,
+      projectId: 'passable-main-1vb98gq',
+      secret: '598y615l2g3xtt21wi75ekwltzyri206',
+      child: MaterialApp(
+        navigatorKey: _navigatorKey,
+        title: 'Passable',
+        theme: ThemeData(
+          primaryColor: AppColors.primary,
+          accentColor: AppColors.secondary,
+          brightness: Brightness.light,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: HomePage(),
+        routes: {
+          'login':(context)=>AskLogin(),
+          'homepage':(context)=>HomePage()
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      home: HomePage(),
-      routes: {
-        'login':(context)=>AskLogin(),
-        'homepage':(context)=>HomePage()
-      },
-      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyApp1 extends StatelessWidget {
+  final _navigatorKey1 = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pass-it-on',
-      theme: ThemeData(
-        primaryColor: AppColors.primary,
-        accentColor: AppColors.secondary,
-        brightness: Brightness.light,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return Wiredash(
+      navigatorKey: _navigatorKey1,
+      projectId: 'passable-main-1vb98gq',
+      secret: '598y615l2g3xtt21wi75ekwltzyri206',
+      child: MaterialApp(
+        navigatorKey: _navigatorKey1,
+        title: 'Pass-it-on',
+        theme: ThemeData(
+          primaryColor: AppColors.primary,
+          accentColor: AppColors.secondary,
+          brightness: Brightness.light,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: AskLogin(),
+        routes: {
+          'login':(context)=>AskLogin(),
+          'homepage':(context)=>HomePage()
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      home: AskLogin(),
-      routes: {
-        'login':(context)=>AskLogin(),
-        'homepage':(context)=>HomePage()
-      },
-      debugShowCheckedModeBanner: false,
     );
   }
 }

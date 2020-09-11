@@ -5,13 +5,14 @@ import 'package:plan_it_on/HomePage.dart';
 import 'package:plan_it_on/Methods/firebaseAdd.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/config.dart';
+import 'package:plan_it_on/intro.dart';
 import 'package:plan_it_on/loginui.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoPage extends StatefulWidget {
-  String phone, name , email;
-  bool isGmail;
+  final String phone, name , email;
+  final bool isGmail;
   UserInfoPage(this.phone,this.email,this.name,this.isGmail);
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
@@ -122,7 +123,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       prefs.setBool('login', true);
                       String name=widget.isGmail?widget.name:_nameController.text;
                       FirebaseAdd().addUser(name, widget.email, widget.phone, uid, isIndia);
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomePage()), ModalRoute.withName('login'));
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>IntroScreenState()), ModalRoute.withName('login'));
                     }
                   },
                   color: AppColors.secondary,

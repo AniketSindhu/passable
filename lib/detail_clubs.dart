@@ -1,20 +1,11 @@
 // import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:plan_it_on/Models/clubs.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
 // class DetailScreen extends StatelessWidget {
-//   final Property property;
-
-//   const DetailScreen(this.property);
-
-//   _launchURL(BuildContext context, String url) async {
-//     if (await canLaunch(url)) {
-//       await launch(url);
-//     } else {
-// //      throw 'Could not launch $url';
-//       Scaffold.of(context).showSnackBar(SnackBar(content: Text("Can't Load: $url")));
-//     }
-//   }
+//   final Club club;
+//   const DetailScreen(this.club);
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -28,7 +19,7 @@
 //               child: Builder(
 //                 builder: (context) => FlatButton.icon(
 //                   onPressed: () {
-//                     _launchURL(context, property.listerUrl);
+                   
 //                   },
 //                   icon: Icon(Icons.launch),
 //                   label: Text("Visit Listing"),
@@ -50,7 +41,7 @@
 //                 fit: StackFit.expand,
 //                 children: <Widget>[
 //                   Image.network(
-//                     property.imgUrl,
+//                     club.poster,
 //                     fit: BoxFit.cover,
 //                   ),
 //                   // This gradient ensures that the toolbar icons are distinct
@@ -82,8 +73,8 @@
 //                             ),
 //                           ),
 //                           Text(
-//                             property.priceFormatted,
-//                             style: Theme.of(context).textTheme.title,
+//                             club.avgPrice.toString(),
+//                             style: Theme.of(context).textTheme.headline6,
 //                           )
 //                         ],
 //                       ),
@@ -103,10 +94,10 @@
 //                 crossAxisAlignment: CrossAxisAlignment.start,
 //                 children: <Widget>[
 //                   Text(
-//                     property.title,
+//                     club.name,
 //                     style: Theme.of(context)
 //                         .textTheme
-//                         .title
+//                         .headline6
 //                         .copyWith(fontSize: 24.0),
 //                   ),
 //                   Container(
@@ -122,17 +113,17 @@
 //                       mainAxisAlignment: MainAxisAlignment.spaceAround,
 //                       children: <Widget>[
 //                         TextIcon(
-//                           icon: FontAwesomeIcons.bed,
-//                           text: "${property.bedroomNumber ?? "#"} Bedrooom",
+//                           icon: FontAwesomeIcons.clock,
+//                           text: "${club.timings ?? "#"} Bedrooom",
 //                         ),
-//                         TextIcon(
-//                           icon: FontAwesomeIcons.shower,
-//                           text: "${property.bathroomNumber ?? "#"} Bathrooom",
-//                         ),
-//                         TextIcon(
-//                           icon: FontAwesomeIcons.car,
-//                           text: "${property.carSpaces ?? "#"} Carspace",
-//                         )
+//                         // TextIcon(
+//                         //   icon: FontAwesomeIcons.shower,
+//                         //   text: "${club.bathroomNumber ?? "#"} Bathrooom",
+//                         // ),
+//                         // TextIcon(
+//                         //   icon: FontAwesomeIcons.car,
+//                         //   text: "${club.carSpaces ?? "#"} Carspace",
+//                         // )
 //                       ],
 //                     ),
 //                   ),
@@ -150,30 +141,19 @@
 //                     "Summary",
 //                     style: Theme.of(context)
 //                         .textTheme
-//                         .title
+//                         .headline6
 //                         .copyWith(fontSize: 20),
 //                   ),
 //                   Padding(
 //                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-//                     child: Text(property.summary),
+//                     child: Text(club.description),
 //                   ),
 //                   Padding(
 //                     padding: const EdgeInsets.only(bottom: 4.0),
 //                     child: Text(
 //                       "Tags",
-//                       style: Theme.of(context).textTheme.subtitle,
+//                       style: Theme.of(context).textTheme.subtitle2,
 //                     ),
-//                   ),
-//                   Wrap(
-//                     runSpacing: 8,
-//                     spacing: 8,
-//                     children: property.keyWordList
-//                         .map((kl) => Chip(
-//                               label: Text(kl),
-//                               labelStyle: TextStyle(color: Colors.white),
-//                               backgroundColor: Theme.of(context).accentColor,
-//                             ))
-//                         .toList(),
 //                   ),
 //                 ],
 //               ),
@@ -191,15 +171,9 @@
 //                       "Lister",
 //                       style: Theme.of(context)
 //                           .textTheme
-//                           .title
+//                           .headline6
 //                           .copyWith(fontSize: 20.0),
 //                     ),
-//                   ),
-//                   ListTile(
-//                     leading: Icon(Icons.account_circle),
-//                     title: Text("${property?.listerName ?? "unavailable"}"),
-//                     subtitle: Text(
-//                         "${property?.datasourceName ?? "source unavailable"}"),
 //                   ),
 //                 ],
 //               ),

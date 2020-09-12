@@ -3,17 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:place_picker/place_picker.dart' as latlng;
-import 'package:plan_it_on/EventDetails.dart';
-import 'package:plan_it_on/JoinedEvents.dart';
+import 'package:plan_it_on/pages/EventDetails.dart';
+import 'package:plan_it_on/pages/JoinedEvents.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:plan_it_on/Methods/googleSignIn.dart';
-import 'package:plan_it_on/loginui.dart';
-import 'package:plan_it_on/search.dart';
+import 'package:plan_it_on/pages/loginui.dart';
+import 'package:plan_it_on/pages/search.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'config/config.dart';
+import '../config/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -216,23 +216,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           controller: _controller,
           backgroundColor: AppColors.tertiary,
           drawerItems: <Widget>[
-            Card(
-              color: Colors.brown,
-              child: Container(
-                width: width*0.5,
-                child: ListTile(
-                 title:Text(
-                   "Get your club/restaurant listed",
-                   style: TextStyle(
-                     fontSize: 18,
-                     color: Colors.white,
-                     fontWeight: FontWeight.bold,
-                   ),
-                 ),
-                 leading: Icon(Icons.restaurant,color: Colors.black),
-                ),
-              ),
-            ),
             Card(
               color: Colors.cyan,
               child: Container(

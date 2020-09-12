@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/config/size.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'Widgets/clipper.dart';
-import 'config/config.dart';
+import '../Widgets/clipper.dart';
+import '../config/config.dart';
 import 'package:social_media_buttons/social_media_buttons.dart';
 
 class Pass extends StatefulWidget {
@@ -153,8 +153,8 @@ class _PassState extends State<Pass> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children:<Widget>[
-                            SocialMediaButton.facebook(url:'',size:35,color: AppColors.primary,),
-                            SocialMediaButton.instagram(url: 'https://www.instagram.com/passiton.og/',size:35,color: AppColors.primary,),
+                            SocialMediaButton.facebook(url:'https://www.facebook.com/passableoffical/',size:35,color: AppColors.primary,),
+                            SocialMediaButton.instagram(url: 'https://www.instagram.com/passable.in/',size:35,color: AppColors.primary,),
                             SocialMediaButton.twitter(url: '',size: 35,color: AppColors.primary,),
                           ]
                         ),

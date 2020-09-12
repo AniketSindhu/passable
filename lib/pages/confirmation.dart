@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_fluid_slider/flutter_fluid_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_it_on/Methods/getPass.dart';
-import 'package:plan_it_on/SuccessBooking.dart';
+import 'package:plan_it_on/pages/SuccessBooking.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/globals.dart';
 import 'package:random_string/random_string.dart';
@@ -210,9 +210,8 @@ class _BuyTicketState extends State<BuyTicket> {
     );
   }
    void openCheckout(double amount) async {
-
     var options = {
-      'key': 'rzp_test_df25oDEIBVWDyE',
+      'key': 'rzp_live_pTBwWAFXawffs5',
       'amount': double.parse(amount.toStringAsFixed(2))*100.toInt(),
       "currency": "INR",
       'name':widget.post.data['eventName'],

@@ -4,12 +4,12 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/pages/HomePage.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Widgets/clipper.dart';
-import 'config/size.dart';
+import '../Widgets/clipper.dart';
+import '../config/size.dart';
 import 'userInfo.dart';
 
 class OTP extends StatefulWidget {

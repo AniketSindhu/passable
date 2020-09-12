@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plan_it_on/Widgets/eventCard.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'config/config.dart';
+import '../config/config.dart';
 class JoinedEvents extends StatefulWidget {
   final String uid;
   JoinedEvents(this.uid);

@@ -1,7 +1,7 @@
 import 'package:intro_slider/intro_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/pages/HomePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroScreenState extends StatefulWidget {

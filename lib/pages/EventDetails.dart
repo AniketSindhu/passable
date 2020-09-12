@@ -5,14 +5,14 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:plan_it_on/Announcements.dart';
+import 'package:plan_it_on/pages/Announcements.dart';
 import 'package:plan_it_on/Models/user.dart';
 import 'package:plan_it_on/config/size.dart';
-import 'package:plan_it_on/confirmation.dart';
+import 'package:plan_it_on/pages/confirmation.dart';
 import 'package:random_string/random_string.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Pass.dart';
-import 'config/config.dart';
+import '../config/config.dart';
 import 'package:flutter_show_more/flutter_show_more.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clipboard/clipboard.dart';
@@ -207,6 +207,20 @@ void nextPage(BuildContext context,double height)async{
                       ),
                     )
                   ],
+                ),
+              ),
+             SizedBox(height:30),
+              Align(
+                child: Text('Event Category',style: GoogleFonts.varelaRound(textStyle:TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 24)),),
+                alignment: Alignment.centerLeft,
+              ),
+              Divider(color:AppColors.secondary,height: 10,thickness: 2,),
+              SizedBox(height:15),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '${widget.post.data['eventCategory']}',
+                  style: TextStyle(fontSize: 20, color: Colors.grey[700]),
                 ),
               ),
              !widget.post.data['isOnline']? SizedBox(height:30):Container(),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:plan_it_on/config/config.dart';
-import 'HomePage.dart';
-import 'loginui.dart';
+import 'pages/HomePage.dart';
+import 'pages/loginui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wiredash/wiredash.dart';
 

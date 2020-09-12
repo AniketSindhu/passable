@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/pages/HomePage.dart';
 import 'package:plan_it_on/Methods/firebaseAdd.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 import 'package:plan_it_on/config/config.dart';
-import 'package:plan_it_on/intro.dart';
-import 'package:plan_it_on/loginui.dart';
+import 'package:plan_it_on/pages/intro.dart';
+import 'package:plan_it_on/pages/loginui.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

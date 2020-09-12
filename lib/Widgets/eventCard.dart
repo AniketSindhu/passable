@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:plan_it_on/EventDetails.dart';
+import 'package:plan_it_on/pages/EventDetails.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/Methods/getUserId.dart';
 

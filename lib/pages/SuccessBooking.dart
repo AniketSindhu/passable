@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/pages/HomePage.dart';
 import 'package:plan_it_on/config/config.dart';
 import 'package:plan_it_on/config/size.dart';
 

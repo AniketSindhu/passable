@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:plan_it_on/HomePage.dart';
+import 'package:plan_it_on/pages/HomePage.dart';
 import 'package:plan_it_on/Methods/firebaseAdd.dart';
-import 'package:plan_it_on/userInfo.dart';
+import 'package:plan_it_on/pages/userInfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;

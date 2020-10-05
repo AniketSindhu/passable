@@ -25,6 +25,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:fancy_drawer/fancy_drawer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:skeleton_text/skeleton_text.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -491,7 +493,22 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   elevation: 20,
                                   child:ClipRRect(
                                     borderRadius:BorderRadius.all(Radius.circular(12)),
-                                    child: Image.network(snapshot.data[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
+                                    child: CachedNetworkImage(
+                                      width: width*0.9,
+                                      imageUrl: snapshot.data[index].data['eventBanner'],
+                                      fit: BoxFit.fill,
+                                      placeholder: (context, url) => SkeletonAnimation(  
+                                        child: Container(  
+                                          width: width*0.9,  
+                                          height: height*0.6,  
+                                          decoration: BoxDecoration(  
+                                              color: Colors.purple[100],  
+                                          ),  
+                                        ),  
+                                      ),
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -683,7 +700,22 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   elevation: 20,
                                   child:ClipRRect(
                                     borderRadius:BorderRadius.all(Radius.circular(12)),
-                                    child: Image.network(snapshot.data.documents[index].data['eventBanner'],width:width*0.9,fit: BoxFit.fill,))
+                                    child: CachedNetworkImage(
+                                      width: width*0.9,
+                                      imageUrl: snapshot.data.documents[index].data['eventBanner'],
+                                      fit: BoxFit.fill,
+                                      placeholder: (context, url) => SkeletonAnimation(  
+                                        child: Container(  
+                                          width: width*0.9,  
+                                          height: height*0.6,  
+                                          decoration: BoxDecoration(  
+                                              color: Colors.purple[100],    
+                                          ),  
+                                        ),  
+                                      ),
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

@@ -12,6 +12,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:skeleton_text/skeleton_text.dart';
 
 class Announcements extends StatefulWidget {
   final String eventCode;
@@ -84,7 +86,20 @@ Widget announceWidget(Announce announce,String eventCode){
           margin: EdgeInsets.symmetric(horizontal:15),
           child:ClipRRect(
             borderRadius: BorderRadius.circular(6),
-            child: Image.network(announce.media,fit:BoxFit.cover,),
+            child: CachedNetworkImage(
+              imageUrl: announce.media,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => SkeletonAnimation(  
+                child: Container(  
+                  width: double.infinity,  
+                  height: 250,  
+                  decoration: BoxDecoration(  
+                      color: Colors.purple[100],  
+                  ),  
+                ),  
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
           )
         ):Container(),
       Padding(

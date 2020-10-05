@@ -35,6 +35,10 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
   @override
   void initState() {
     _tabController = new TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+      });
+    });
     super.initState();
   }
 
@@ -49,11 +53,6 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-          onTap: (val){
-            setState(() {
-              index=val;
-            });
-          },
           labelColor: Colors.red,
           indicatorColor: AppColors.tertiary,
           tabs:<Tab>[
@@ -63,7 +62,6 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
         ),
       ),
       body:TabBarView(
-        physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children:[Column(
           children: [
@@ -75,7 +73,7 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
               ),
             ),
             FutureBuilder(
-              future: getEvents(index),
+              future: getEvents(_tabController.index),
               builder:(context,snapshot){
                 if(snapshot.connectionState==ConnectionState.waiting)
                 {
@@ -149,7 +147,7 @@ class _JoinedEventsState extends State<JoinedEvents> with SingleTickerProviderSt
               ),
             ),
             FutureBuilder(
-              future: getEvents(index),
+              future: getEvents(_tabController.index),
               builder:(context,snapshot){
                 if(snapshot.connectionState==ConnectionState.waiting)
                 {

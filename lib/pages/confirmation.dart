@@ -211,7 +211,7 @@ class _BuyTicketState extends State<BuyTicket> {
   }
    void openCheckout(double amount) async {
     var options = {
-      'key': 'rzp_live_pTBwWAFXawffs5',
+      'key': 'rzp_test_df25oDEIBVWDyE',
       'amount': double.parse(amount.toStringAsFixed(2))*100.toInt(),
       "currency": "INR",
       'name':widget.post.data['eventName'],

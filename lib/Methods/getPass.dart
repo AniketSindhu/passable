@@ -51,12 +51,12 @@ class GetPass{
       Firestore.instance.collection('partners').document(post.data['partner']).collection('eventsPartnered').document(post.data['eventCode']).updateData({'amount_to_be_paid':FieldValue.increment(post.data['ticketPrice']*ticketCount*2/100),'amount_earned':FieldValue.increment(post.data['ticketPrice']*ticketCount*2/100)});
       
       if(!post.data['isOnline']){
-        Firestore.instance.collection("events").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount});
+        Firestore.instance.collection("events").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount,'ticketPrice':post.data['ticketPrice']});
         Firestore.instance.collection('events').document(post.data['eventCode']).updateData({'joined': FieldValue.increment(ticketCount),'amountEarned':FieldValue.increment(post.data['ticketPrice']*ticketCount),'amount_to_be_paid':FieldValue.increment(post.data['ticketPrice']*ticketCount)});
       }
       
       else{
-        Firestore.instance.collection("OnlineEvents").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount});
+        Firestore.instance.collection("OnlineEvents").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount,'ticketPrice':post.data['ticketPrice']});
         Firestore.instance.collection('OnlineEvents').document(post.data['eventCode']).updateData({'joined': FieldValue.increment(ticketCount),'amountEarned':FieldValue.increment(post.data['ticketPrice']*ticketCount,),'amount_to_be_paid':FieldValue.increment(post.data['ticketPrice']*ticketCount)});
       }
 
@@ -66,17 +66,17 @@ class GetPass{
 
     else if(post.data['isPaid']&&post.data['partner']==null){
       String passCode= randomAlphaNumeric(8);
-      Firestore.instance.collection('users').document(uid).collection('eventJoined').document(post.data['eventCode']).setData({'eventCode':post.data['eventCode'],'passCode':passCode,'pay_id':response.paymentId,'ticketCount':ticketCount,'dateTime':DateTime.now()});
+      Firestore.instance.collection('users').document(uid).collection('eventJoined').document(post.data['eventCode']).setData({'eventCode':post.data['eventCode'],'passCode':passCode,'pay_id':response.paymentId,'ticketCount':ticketCount,'dateTime':DateTime.now(),'ticketPrice':post.data['ticketPrice']});
       Firestore.instance.collection('payments').document(response.paymentId).setData({'eventCode':post.data['eventCode'],'passCode':passCode,'pay_id':response.paymentId,'amount':post.data['ticketPrice']*ticketCount,'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name});
       fcm.subscribeToTopic(post.data['eventCode']);
       
       if(!post.data['isOnline']){
-        Firestore.instance.collection("events").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount});
+        Firestore.instance.collection("events").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount,'ticketPrice':post.data['ticketPrice']});
         Firestore.instance.collection('events').document(post.data['eventCode']).updateData({'joined': FieldValue.increment(ticketCount),'amountEarned':FieldValue.increment(post.data['ticketPrice']*ticketCount,),'amount_to_be_paid':FieldValue.increment(post.data['ticketPrice']*ticketCount)});
       }
       
       else{
-        Firestore.instance.collection("OnlineEvents").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount});
+        Firestore.instance.collection("OnlineEvents").document(post.data['eventCode']).collection('guests').document(passCode).setData({'user':user.uid,'phone':user.phone,'email':user.email,'name':user.name,'passCode':passCode,'Scanned':false,'pay_id':response.paymentId,'ticketCount':ticketCount,'ticketPrice':post.data['ticketPrice']});
         Firestore.instance.collection('OnlineEvents').document(post.data['eventCode']).updateData({'joined': FieldValue.increment(ticketCount),'amountEarned':FieldValue.increment(post.data['ticketPrice']*ticketCount,),'amount_to_be_paid':FieldValue.increment(post.data['ticketPrice']*ticketCount)});
       }
 

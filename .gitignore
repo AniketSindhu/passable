@@ -46,3 +46,12 @@ app.*.map.json
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 .env
+
+# Gradle files
+.gradle/
+
+# Local configuration file (sdk path, etc)
+/local.properties
+/key.properties
+
+*.jks

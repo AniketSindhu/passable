@@ -215,7 +215,7 @@ class _AskLoginState extends State<AskLogin> {
                   CheckboxListTile(
                     title: Text.rich(TextSpan(
                       children:[
-                        TextSpan(text:"You accept the"),
+                        TextSpan(text:"I accept the"),
                         TextSpan(text:" Privacy policy",recognizer: TapGestureRecognizer()..onTap=(){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>Policy(index:0)));
                         },style: TextStyle(color:Colors.blue,fontStyle: FontStyle.italic)),

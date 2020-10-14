@@ -220,18 +220,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           drawerItems: <Widget>[
             Card(
               color: Colors.cyan,
-              child: Container(
-                width: width*0.5,
-                child: ListTile(
-                 title:Text(
-                   "Host an event",
-                   style: TextStyle(
-                     fontSize: 18,
-                     color: Colors.white,
-                     fontWeight: FontWeight.bold,
+              child: InkWell(
+                onTap: (){
+                  launch('https://play.google.com/store/apps/details?id=com.aniket.passable_host');
+                },
+                child: Container(
+                  width: width*0.5,
+                  child: ListTile(
+                   title:Text(
+                     "Host an event",
+                     style: TextStyle(
+                       fontSize: 18,
+                       color: Colors.white,
+                       fontWeight: FontWeight.bold,
+                     ),
                    ),
-                 ),
-                 leading: Icon(Icons.event,color: Colors.black),
+                   leading: Icon(Icons.event,color: Colors.black),
+                  ),
                 ),
               ),
             ),

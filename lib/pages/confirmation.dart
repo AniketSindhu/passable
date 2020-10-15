@@ -182,24 +182,25 @@ class _BuyTicketState extends State<BuyTicket> {
                           color: Colors.black),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal:40.0 , vertical:10.0),
-                    width: 150,
-                    height: 50,
-                    decoration: BoxDecoration(color:  AppColors.secondary , borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0))),
-                    child: InkWell(
-                      onTap:() async{
-                        if(widget.post.data['isPaid'])
-                          openCheckout(widget.post.data['ticketPrice']*_ticketCount);
-                        else
-                          await GetPass().bookPass(widget.post, _ticketCount, null).then(
-                            (value){
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-                                return Success(passCode:value,eventCode:widget.post.data['eventCode'],payment_id: null,isOnline: widget.post.data['isOnline'],);
-                              }),ModalRoute.withName("/homepage"));
-                            });
-                      },
-                      child: Center(child: Text('Pay' , style: TextStyle(color: Colors.white ,fontSize: 25.0 , fontWeight:FontWeight.bold)))),
+                  InkWell(
+                    onTap:() async{
+                      if(widget.post.data['isPaid'])
+                        openCheckout(widget.post.data['ticketPrice']*_ticketCount);
+                      else
+                        await GetPass().bookPass(widget.post, _ticketCount, null).then(
+                          (value){
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+                              return Success(passCode:value,eventCode:widget.post.data['eventCode'],payment_id: null,isOnline: widget.post.data['isOnline'],);
+                            }),ModalRoute.withName("/homepage"));
+                          });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal:40.0 , vertical:10.0),
+                      width: 150,
+                      height: 50,
+                      decoration: BoxDecoration(color:  AppColors.secondary , borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0))),
+                      child: Center(child: Text('Pay' , style: TextStyle(color: Colors.white ,fontSize: 25.0 , fontWeight:FontWeight.bold))),
+                    ),
                   )
                 ],
               ),
